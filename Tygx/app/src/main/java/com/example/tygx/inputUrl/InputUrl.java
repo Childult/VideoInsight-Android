@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat;
 import com.example.tygx.R;
 import com.example.tygx.databinding.ActivityInputUrlBinding;
 import com.example.tygx.databinding.ActivityLoginBinding;
+import com.example.tygx.showAbstract.ShowAbstract;
 import com.example.tygx.ui.login.LoginActivity;
 import com.example.tygx.utils.BaseActivity;
 
@@ -35,6 +36,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class InputUrl extends BaseActivity {
+
+    private static final int REQ_ABSTRACT = 1;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,14 +55,16 @@ public class InputUrl extends BaseActivity {
         });
         inflate.toolbarInputUrl.setNavigationContentDescription("返回");
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+        inflate.buttonConfirmInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(InputUrl.this, ShowAbstract.class);
+                startActivityForResult(intent, REQ_ABSTRACT);
+            }
+        });
     }
 
-
-    //upload_music
-    @OnClick(R.id.button_confirmInput)
-    public void confirmInput(){
-
-    }
 
 }
 

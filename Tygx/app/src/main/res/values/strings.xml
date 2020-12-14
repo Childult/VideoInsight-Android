@@ -11,4 +11,5 @@
     <string name="login_failed">"Login failed"</string>
     <string name="confirm">确认</string>
     <string name="hint_inputUrl">请输入视频Url</string>
+    <string name="title_abstract">摘要</string>
 </resources>

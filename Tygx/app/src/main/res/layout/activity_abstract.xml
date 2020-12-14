@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_inputUrl"
+        android:id="@+id/toolbar_abstract"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="#000000"
+        android:background="#FF388E3C"
         app:navigationIcon="@drawable/ic_navigate_before_white_24dp"
         app:title=""
         app:titleTextColor="@color/white"
@@ -27,7 +28,7 @@
                 android:layout_height="31dp"
                 android:layout_marginEnd="136dp"
                 android:background="@android:color/transparent"
-                android:text="@string/hint_inputUrl"
+                android:text="@string/title_abstract"
                 android:textColor="#FFFFFFFF"
                 android:textSize="22sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -37,33 +38,21 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <EditText
-        android:id="@+id/text_inputUrl"
-        android:layout_width="260dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="252dp"
-        android:autofillHints="www.baidu.com"
-        android:background="@drawable/textview_background"
-        android:hint="@string/hint_inputUrl"
-        android:inputType="textUri"
-        android:selectAllOnFocus="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <com.youth.banner.Banner
+        app:layout_constraintTop_toBottomOf="@id/toolbar_abstract"
+        android:id="@+id/banner"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:banner_auto_loop="false"/>
 
-    <Button
-        android:id="@+id/button_confirmInput"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="348dp"
-        android:background="#FFFF6D00"
-        android:enabled="true"
-        android:text="@string/confirm"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:text="中国科学院软件研究所是一所致力于计算机科学理论和软件高新技术的研究与发展的综合性基地型研究所。"
+        app:layout_constraintTop_toBottomOf="@id/banner"
+        tools:layout_editor_absoluteX="158dp"
+        tools:layout_editor_absoluteY="356dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
