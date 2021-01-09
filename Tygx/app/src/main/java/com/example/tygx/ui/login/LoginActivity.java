@@ -27,13 +27,18 @@ import android.widget.Toast;
 
 import com.example.tygx.R;
 import com.example.tygx.inputUrl.InputUrl;
+import com.example.tygx.mainWindow.MainWindow;
 import com.example.tygx.ui.login.LoginViewModel;
 import com.example.tygx.ui.login.LoginViewModelFactory;
 
+/*
+* 登录界面
+* 点击登录后跳转
+*/
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
-    private static final int REQ_INPUT_URL = 1;
+    private static final int REQ_MAIN_WINDOW_URL = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -124,8 +129,8 @@ public class LoginActivity extends AppCompatActivity {
                 //todo 登录
 //                loginViewModel.login(usernameEditText.getText().toString(),
 //                        passwordEditText.getText().toString());
-                Intent intent = new Intent(LoginActivity.this, InputUrl.class);
-                startActivityForResult(intent, REQ_INPUT_URL);
+                Intent intent = new Intent(LoginActivity.this, MainWindow.class);
+                startActivityForResult(intent, REQ_MAIN_WINDOW_URL);
 //                loadingProgressBar.setVisibility(View.INVISIBLE);
             }
         });
@@ -147,7 +152,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         Log.d(TAG, "onActivityResult: 1111");
-        if (requestCode == REQ_INPUT_URL) {
+        if (requestCode == REQ_MAIN_WINDOW_URL) {
 
             if(resultCode == RESULT_CANCELED){
                 Log.d(TAG, "onActivityResult: 2222");

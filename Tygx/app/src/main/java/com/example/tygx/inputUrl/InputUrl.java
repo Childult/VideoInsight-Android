@@ -35,6 +35,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/*
+* 输入网页url以及关键词的页面
+* 点击后进入摘要展示页面
+*/
 public class InputUrl extends BaseActivity {
 
     private static final int REQ_ABSTRACT = 1;
@@ -45,15 +49,13 @@ public class InputUrl extends BaseActivity {
         setContentView(inflate.getRoot());
 
         Intent intent = getIntent();
-
+        //状态栏
         inflate.toolbarInputUrl.setNavigationOnClickListener(v -> {
             setResult(RESULT_CANCELED);
             this.finish();
-//            ActivityLoginBinding inflate1 = ActivityLoginBinding.inflate(getLayoutInflater());
-//            setContentView(inflate1.getRoot());
-//            inflate1.loading.setVisibility(View.INVISIBLE);
         });
         inflate.toolbarInputUrl.setNavigationContentDescription("返回");
+        //沉浸式状态栏设置
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         inflate.buttonConfirmInput.setOnClickListener(new View.OnClickListener() {

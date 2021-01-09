@@ -27,7 +27,7 @@
                 android:layout_height="31dp"
                 android:layout_marginEnd="136dp"
                 android:background="@android:color/transparent"
-                android:text="@string/hint_inputUrl"
+                android:text="@string/input_url_toolbar"
                 android:textColor="#FFFFFFFF"
                 android:textSize="22sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -38,13 +38,13 @@
     </androidx.appcompat.widget.Toolbar>
 
     <EditText
-        android:id="@+id/text_inputUrl"
-        android:layout_width="260dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="252dp"
+        android:id="@+id/text_input_url"
+        android:layout_width="320dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="216dp"
         android:autofillHints="www.baidu.com"
         android:background="@drawable/textview_background"
-        android:hint="@string/hint_inputUrl"
+        android:hint="@string/input_url_url"
         android:inputType="textUri"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,18 +52,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/button_confirmInput"
+    <EditText
+        android:id="@+id/text_input_keyword"
+        android:layout_width="320dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="286dp"
+        android:autofillHints="www.baidu.com"
+        android:background="@drawable/textview_background"
+        android:hint="@string/input_url_keyword"
+        android:inputType="textUri"
+        android:selectAllOnFocus="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+        android:id="@+id/switch_keyword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="348dp"
-        android:background="#FFFF6D00"
+        android:layout_marginTop="356dp"
+        android:text="@string/input_url_keyword_trigger"
+        android:switchPadding="138dp"
+        android:textOn="@string/switch_on"
+        android:textOff="@string/switch_off"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/button_confirmInput"
+        android:layout_width="120dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="440dp"
+        android:background="@drawable/textview_background"
         android:enabled="true"
         android:text="@string/confirm"
-        android:textColor="@color/white"
-        android:textSize="14sp"
+        android:textColor="#777777"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

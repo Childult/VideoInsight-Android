@@ -28,6 +28,14 @@
             android:name=".showAbstract.ShowAbstract"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".mainWindow.MainWindow"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".myAbstract.MyAbstract"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
