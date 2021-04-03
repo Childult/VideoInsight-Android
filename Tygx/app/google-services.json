@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1091705433573",
+    "project_id": "tygx-5b0d2",
+    "storage_bucket": "tygx-5b0d2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1091705433573:android:d9f36feb62c5fce3ead30c",
+        "android_client_info": {
+          "package_name": "com.example.tygx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1091705433573-9f3umkk0p4orrq887b4rpia1ngt6ea90.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1jRzOQ4eihTw_cmsxQUesdoyEc1qBMP4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1091705433573-9f3umkk0p4orrq887b4rpia1ngt6ea90.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

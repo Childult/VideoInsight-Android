@@ -13,7 +13,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 public class MyAbstract extends BaseActivity {
 
     ActivityMyAbstractBinding inflate;
-    String[] tabs = {"已完成", "处理中"};
+    String[] tabs = {"未读", "已读"};
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

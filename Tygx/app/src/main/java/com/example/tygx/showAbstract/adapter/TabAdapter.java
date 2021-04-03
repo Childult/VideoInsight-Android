@@ -1,5 +1,6 @@
 package com.example.tygx.showAbstract.adapter;
 
+import android.os.Bundle;
 import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
@@ -20,16 +21,18 @@ public class TabAdapter extends FragmentStateAdapter {
     private static final int ONLY_TEXT = 1;
     private static final int SUBSECTION = 2;
     private static final int SUBTITLE = 3;
+    private String jobId;
 
     SparseArray<Fragment> fragments = new SparseArray<>();
     int mNumOfTabs;
 
-    public TabAdapter(@NonNull FragmentActivity fragmentActivity) {
+    public TabAdapter(@NonNull FragmentActivity fragmentActivity, String jobId) {
         super(fragmentActivity);
-        fragments.put(PIC_TEXT, PicTextFragment.getInstance(0));
-        fragments.put(ONLY_TEXT, OnlyTextFragment.getInstance(1));
-        fragments.put(SUBSECTION, SubsectionFragment.getInstance(2));
-        fragments.put(SUBTITLE, SubtitleFragment.getInstance(3));
+        fragments.put(PIC_TEXT, PicTextFragment.getInstance(0, jobId));
+        fragments.put(ONLY_TEXT, OnlyTextFragment.getInstance(1, jobId));
+        fragments.put(SUBSECTION, SubsectionFragment.getInstance(2, jobId));
+        fragments.put(SUBTITLE, SubtitleFragment.getInstance(3, jobId));
+        this.jobId = jobId;
     }
 
     @NonNull
@@ -39,7 +42,7 @@ public class TabAdapter extends FragmentStateAdapter {
         switch (position) {
             case PIC_TEXT:
                 if(fragments.get(PIC_TEXT) == null) {
-                    fragment = PicTextFragment.getInstance(0);
+                    fragment = PicTextFragment.getInstance(0, jobId);
                     fragments.put(PIC_TEXT, fragment);
                 } else {
                     fragment = fragments.get(PIC_TEXT);
@@ -47,7 +50,7 @@ public class TabAdapter extends FragmentStateAdapter {
                 break;
             case ONLY_TEXT:
                 if(fragments.get(ONLY_TEXT) == null) {
-                    fragment = PicTextFragment.getInstance(0);
+                    fragment = PicTextFragment.getInstance(1, jobId);
                     fragments.put(ONLY_TEXT, fragment);
                 } else {
                     fragment = fragments.get(ONLY_TEXT);
@@ -55,7 +58,7 @@ public class TabAdapter extends FragmentStateAdapter {
                 break;
             case SUBSECTION:
                 if(fragments.get(SUBSECTION) == null) {
-                    fragment = PicTextFragment.getInstance(0);
+                    fragment = PicTextFragment.getInstance(2, jobId);
                     fragments.put(SUBSECTION, fragment);
                 } else {
                     fragment = fragments.get(SUBSECTION);
@@ -63,7 +66,7 @@ public class TabAdapter extends FragmentStateAdapter {
                 break;
             case SUBTITLE:
                 if(fragments.get(SUBTITLE) == null) {
-                    fragment = PicTextFragment.getInstance(0);
+                    fragment = PicTextFragment.getInstance(3, jobId);
                     fragments.put(SUBTITLE, fragment);
                 } else {
                     fragment = fragments.get(SUBTITLE);

@@ -1,7 +1,9 @@
 package com.example.tygx.mainWindow;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
@@ -10,6 +12,7 @@ import com.example.tygx.inputUrl.InputUrl;
 import com.example.tygx.myAbstract.MyAbstract;
 import com.example.tygx.showAbstract.ShowAbstract;
 import com.example.tygx.utils.BaseActivity;
+import com.example.tygx.utils.Global;
 
 
 /*
@@ -23,6 +26,14 @@ public class MainWindow extends BaseActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(Global.HTTP_DEBUG_MODE){
+            SharedPreferences sPreferences = this.getSharedPreferences("taskList", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sPreferences.edit();
+            editor.clear();
+            editor.apply();
+        }
+
         ActivityMainWindowBinding inflate = ActivityMainWindowBinding.inflate(getLayoutInflater());
         setContentView(inflate.getRoot());
 

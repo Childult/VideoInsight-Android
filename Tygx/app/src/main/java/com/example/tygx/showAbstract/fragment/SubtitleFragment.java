@@ -33,10 +33,11 @@ public class SubtitleFragment extends Fragment {
     }
 
 
-    public static SubtitleFragment getInstance(int index) {
+    public static SubtitleFragment getInstance(int index, String jobId) {
         SubtitleFragment f = new SubtitleFragment();
         Bundle args = new Bundle();
         args.putInt("index", index);
+        args.putString("jobId",jobId);
         f.setArguments(args);
         return f;
     }

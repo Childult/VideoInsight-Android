@@ -1,0 +1,73 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "598fb4bb4e54ef2b4291ea55ef2bbce8",
+    "entities": [
+      {
+        "tableName": "abstracts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`jobId` TEXT NOT NULL, `result` TEXT, `status` TEXT, `type` TEXT, `url` TEXT, `message` TEXT, PRIMARY KEY(`jobId`))",
+        "fields": [
+          {
+            "fieldPath": "jobId",
+            "columnName": "jobId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "result",
+            "columnName": "result",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "message",
+            "columnName": "message",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "jobId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_abstracts_jobId",
+            "unique": true,
+            "columnNames": [
+              "jobId"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_abstracts_jobId` ON `${TABLE_NAME}` (`jobId`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '598fb4bb4e54ef2b4291ea55ef2bbce8')"
+    ]
+  }
+}

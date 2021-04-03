@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.tygx.showAbstract.bean.DataBean;
 import com.youth.banner.adapter.BannerAdapter;
 
@@ -35,7 +36,12 @@ public class ImageAdapter extends BannerAdapter<DataBean, ImageAdapter.BannerVie
 
     @Override
     public void onBindView(BannerViewHolder holder, DataBean data, int position, int size) {
-        holder.imageView.setImageResource(data.imageRes);
+//        holder.imageView.setImageResource(data.imageRes);
+        if(data.viewType == 8){
+            Glide.with(holder.itemView)
+                    .load(data.bitmapArray)
+                    .into(holder.imageView);
+        }
     }
 
     class BannerViewHolder extends RecyclerView.ViewHolder {

@@ -10,7 +10,9 @@ import java.util.Random;
 public class DataBean {
     public Integer imageRes;
     public String imageUrl;
+    public byte[] bitmapArray;
     public String title;
+    //图片类别，8 为BitmapArray
     public int viewType;
 
     public DataBean(Integer imageRes, String title, int viewType) {
@@ -21,6 +23,12 @@ public class DataBean {
 
     public DataBean(String imageUrl, String title, int viewType) {
         this.imageUrl = imageUrl;
+        this.title = title;
+        this.viewType = viewType;
+    }
+
+    public DataBean(byte[] bitmapArray, String title, int viewType) {
+        this.bitmapArray = bitmapArray;
         this.title = title;
         this.viewType = viewType;
     }

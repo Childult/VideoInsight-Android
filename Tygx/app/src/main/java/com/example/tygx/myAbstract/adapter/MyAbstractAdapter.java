@@ -7,26 +7,23 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.tygx.myAbstract.fragment.DealingFragment;
-import com.example.tygx.myAbstract.fragment.DoneFragment;
-import com.example.tygx.showAbstract.fragment.OnlyTextFragment;
+import com.example.tygx.myAbstract.fragment.UnreadFragment;
+import com.example.tygx.myAbstract.fragment.ReadFragment;
 import com.example.tygx.showAbstract.fragment.PicTextFragment;
-import com.example.tygx.showAbstract.fragment.SubsectionFragment;
-import com.example.tygx.showAbstract.fragment.SubtitleFragment;
 
 //摘要处理情况栏适配器
 public class MyAbstractAdapter extends FragmentStateAdapter {
 
-    private static final int DONE = 0;
-    private static final int DEALING = 1;
+    private static final int UNREAD = 0;
+    private static final int READ = 1;
 
     SparseArray<Fragment> fragments = new SparseArray<>();
     int mNumOfTabs;
 
     public MyAbstractAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
-        fragments.put(DONE, DoneFragment.getInstance(1));
-        fragments.put(DEALING, DealingFragment.getInstance(1));
+        fragments.put(UNREAD, UnreadFragment.getInstance(0));
+        fragments.put(READ, ReadFragment.getInstance(1));
     }
 
     //创建
@@ -35,20 +32,20 @@ public class MyAbstractAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         Fragment fragment;
         switch (position) {
-            case DONE:
-                if(fragments.get(DONE) == null) {
-                    fragment = PicTextFragment.getInstance(1);
-                    fragments.put(DONE, fragment);
+            case UNREAD:
+                if(fragments.get(UNREAD) == null) {
+                    fragment = UnreadFragment.getInstance(0);
+                    fragments.put(UNREAD, fragment);
                 } else {
-                    fragment = fragments.get(DONE);
+                    fragment = fragments.get(UNREAD);
                 }
                 break;
-            case DEALING:
-                if(fragments.get(DEALING) == null) {
-                    fragment = PicTextFragment.getInstance(1);
-                    fragments.put(DEALING, fragment);
+            case READ:
+                if(fragments.get(READ) == null) {
+                    fragment = ReadFragment.getInstance(1);
+                    fragments.put(READ, fragment);
                 } else {
-                    fragment = fragments.get(DEALING);
+                    fragment = fragments.get(READ);
                 }
                 break;
             default:

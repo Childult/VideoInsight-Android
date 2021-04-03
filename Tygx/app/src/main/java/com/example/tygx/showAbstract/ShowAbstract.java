@@ -27,6 +27,7 @@ public class ShowAbstract extends BaseActivity {
 
     ActivityAbstractBinding inflate;
     String[] tabs = {"图文摘要", "文本摘要", "分段摘要", "视频摘要"};
+    String jobId;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +35,7 @@ public class ShowAbstract extends BaseActivity {
         setContentView(inflate.getRoot());
 
         Intent intent = getIntent();
+        jobId = intent.getExtras().getString("jobId");
 
         inflate.toolbarAbstract.setNavigationOnClickListener(v -> {
             setResult(RESULT_CANCELED);
@@ -42,7 +44,7 @@ public class ShowAbstract extends BaseActivity {
         inflate.toolbarAbstract.setNavigationContentDescription("返回");
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        inflate.viewPager.setAdapter(new TabAdapter(this));
+        inflate.viewPager.setAdapter(new TabAdapter(this, jobId));
         //预加载页数
         inflate.viewPager.setOffscreenPageLimit(1);
         //用户是否允许输入

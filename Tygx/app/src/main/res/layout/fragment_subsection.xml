@@ -16,7 +16,7 @@
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="中国科学院软件研究所是一所致力于计算机科学理论和软件高新技术的研究与发展的综合性基地型研究所。"
+        android:text=""
         app:layout_constraintTop_toBottomOf="@id/banner"
         tools:layout_editor_absoluteX="158dp"
         tools:layout_editor_absoluteY="356dp" />

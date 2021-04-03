@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_inputUrl"
@@ -37,7 +37,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <EditText
+    <com.andreabaccega.widget.FormEditText
         android:id="@+id/text_input_url"
         android:layout_width="320dp"
         android:layout_height="48dp"
@@ -50,9 +50,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:testType="webUrl"
+        app:emptyErrorString="该项不能为空"
+        app:testErrorString="请填写合法的url"
+        app:emptyAllowed="false"/>
 
-    <EditText
+    <com.andreabaccega.widget.FormEditText
         android:id="@+id/text_input_keyword"
         android:layout_width="320dp"
         android:layout_height="48dp"
@@ -65,7 +69,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:emptyAllowed="true"/>
 
     <Switch
         android:id="@+id/switch_keyword"

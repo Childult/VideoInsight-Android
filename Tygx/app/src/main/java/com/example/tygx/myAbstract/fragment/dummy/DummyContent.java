@@ -1,5 +1,9 @@
 package com.example.tygx.myAbstract.fragment.dummy;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,11 +27,11 @@ public class DummyContent {
      */
     public static final Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
 
-    private static final int COUNT = 25;
+    private static final int count = 25;
 
     static {
         // Add some sample items.
-        for (int i = 1; i <= COUNT; i++) {
+        for (int i = 1; i <= count; i++) {
             addItem(createDummyItem(i));
         }
     }
@@ -38,7 +42,7 @@ public class DummyContent {
     }
 
     private static DummyItem createDummyItem(int position) {
-        return new DummyItem(String.valueOf(position), "Item " + position, makeDetails(position));
+        return new DummyItem(String.valueOf(position), "Item " + position, makeDetails(position),"","","");
     }
 
     private static String makeDetails(int position) {
@@ -57,11 +61,17 @@ public class DummyContent {
         public final String id;
         public final String content;
         public final String details;
+        public String status;
+        public String jobId;
+        public String result;
 
-        public DummyItem(String id, String content, String details) {
+        public DummyItem(String id, String content, String details, String status, String jobId, String result) {
             this.id = id;
             this.content = content;
             this.details = details;
+            this.status = status;
+            this.jobId = jobId;
+            this.result = result;
         }
 
         @Override

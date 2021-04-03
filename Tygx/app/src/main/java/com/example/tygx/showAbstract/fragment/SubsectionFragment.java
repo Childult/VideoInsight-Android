@@ -33,10 +33,11 @@ public class SubsectionFragment extends Fragment {
     }
 
 
-    public static SubsectionFragment getInstance(int index) {
+    public static SubsectionFragment getInstance(int index, String jobId) {
         SubsectionFragment f = new SubsectionFragment();
         Bundle args = new Bundle();
         args.putInt("index", index);
+        args.putString("jobId",jobId);
         f.setArguments(args);
         return f;
     }
