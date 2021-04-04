@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.tygx.data.TaskListSharedPreference;
@@ -37,6 +38,9 @@ import com.example.tygx.utils.Global;
 import com.kingja.loadsir.callback.Callback;
 import com.kingja.loadsir.core.LoadService;
 import com.kingja.loadsir.core.LoadSir;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -60,6 +64,7 @@ public class UnreadFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     protected RecyclerView recyclerView;
+    protected SmartRefreshLayout refreshLayout;
     //using DummyItem
     //protected MyAbstractRecyclerViewAdapter<DummyContent.DummyItem> myAbstractRecyclerViewAdapter;
     //protected List<DummyContent.DummyItem> items = Collections.synchronizedList(new ArrayList<>());
@@ -207,6 +212,17 @@ public class UnreadFragment extends Fragment {
                 }
             }
         });
+
+        refreshLayout = binding.refreshLayout;
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                items = AbstractsManager.getIntance(context).abstractsDao().loadByType("未读");
+                myAbstractRecyclerViewAdapter.notifyDataSetChanged();
+                refreshLayout.finishRefresh(1000);
+            }
+        });
+
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
         dividerItemDecoration.setDrawable(new ColorDrawable(ContextCompat.getColor(context, android.R.color.darker_gray)));
