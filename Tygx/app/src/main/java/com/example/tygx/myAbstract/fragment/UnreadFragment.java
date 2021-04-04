@@ -1,6 +1,7 @@
 package com.example.tygx.myAbstract.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -297,6 +298,11 @@ public class UnreadFragment extends Fragment {
                 mAbstract.setMessage(message);
                 mAbstract.setStatus(status);
                 if(message.equals("完成")){
+                    mActivity.runOnUiThread(()->new  AlertDialog.Builder(mActivity)
+                            .setTitle("摘要任务完成" )
+                            .setMessage(jobId + "摘要任务完成" )
+                            .setPositiveButton("确定" ,  null )
+                            .show());
                     mAbstract.setResult(result);
                 }
                 AbstractsManager.getIntance(context).abstractsDao().update(mAbstract);
