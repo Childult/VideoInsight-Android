@@ -174,7 +174,7 @@ public class InputUrl extends BaseActivity {
                         @Override
                         public void run() {
                             try {
-                                String url = inflate.textInputUrl.toString();
+                                String url = inflate.textInputUrl.getText().toString();
                                 if (Global.HTTP_DEBUG_MODE) {
                                     url = "https://www.bilibili.com/video/BV1Bv411k745";
                                     Global.fID = "test";
