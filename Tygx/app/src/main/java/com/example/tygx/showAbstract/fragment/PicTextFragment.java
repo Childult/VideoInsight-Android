@@ -60,17 +60,23 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
         Abstract mAbstract = AbstractsManager.getIntance(context).abstractsDao().loadByJobId(jobId);
         String result = mAbstract.getResult();
         StringBuilder sb = new StringBuilder();
-        try{
+        try {
             //text
             JSONObject resultJson = new JSONObject(result);
             textArray = resultJson.getJSONArray("text");
             int text_index = 0;
-            while (text_index < textArray.length()){
+            while (text_index < textArray.length()) {
                 sb.append(textArray.get(text_index).toString());
                 sb.append("\n");
                 text_index++;
             }
+            text = sb.toString();
+        }catch (JSONException e) {
+            Log.e("textAbstract","json load failed");
+        }
+        try{
             //picture
+            JSONObject resultJson = new JSONObject(result);
             JSONObject pictureJson = new JSONObject(resultJson.get("pictures").toString());
             int frame_i = 1;
             String frame_key = "keyframe_" + frame_i + ".jpg";
@@ -81,7 +87,6 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
                 frame_i++;
                 frame_key = "keyframe_" + frame_i + ".jpg";
             }
-            text = resultJson.getJSONArray("text").get(0).toString();
         }catch (JSONException e) {
             Log.e("textAbstract","json load failed");
         }

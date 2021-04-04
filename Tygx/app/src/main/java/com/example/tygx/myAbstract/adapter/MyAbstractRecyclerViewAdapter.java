@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.animation.BaseAnimation;
+import com.chad.library.adapter.base.loadmore.LoadMoreView;
 import com.example.tygx.R;
 import com.example.tygx.data.repository.Abstract;
 import com.example.tygx.myAbstract.fragment.dummy.DummyContent.DummyItem;
@@ -25,7 +26,7 @@ import java.util.List;
  * {@link RecyclerView.Adapter} that can display a {@link Abstract}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyAbstractRecyclerViewAdapter<T> extends BaseQuickAdapter<T, BaseViewHolder> {
+public class MyAbstractRecyclerViewAdapter<T> extends BaseQuickAdapter<T, BaseViewHolder>  {
 
     private final List<T> mValues;
     protected View mHeaderView;

@@ -124,18 +124,27 @@ public class ReadFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        int i = 0;
-        SharedPreferences sPreferences = context.getSharedPreferences("taskList", Context.MODE_PRIVATE);
-        Set<String> readTaskSet;
-        if(sPreferences.contains("readTaskSet")) {
-            readTaskSet = sPreferences.getStringSet("readTaskSet", new HashSet<String>());
-        }else {
-            readTaskSet = new HashSet<>();
-        }
-        for(String jobId: readTaskSet){
-            myAbstractRecyclerViewAdapter.notifyItemChanged(i);
-            i++;
-        }
+//        int i = 0;
+//        SharedPreferences sPreferences = context.getSharedPreferences("taskList", Context.MODE_PRIVATE);
+//        Set<String> readTaskSet;
+//        if(sPreferences.contains("readTaskSet")) {
+//            readTaskSet = sPreferences.getStringSet("readTaskSet", new HashSet<String>());
+//        }else {
+//            readTaskSet = new HashSet<>();
+//        }
+//        for(String jobId: readTaskSet){
+//            myAbstractRecyclerViewAdapter.notifyItemChanged(i);
+//            i++;
+//        }
+        items = AbstractsManager.getIntance(context).abstractsDao().loadByType("已读");
+        myAbstractRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        items = AbstractsManager.getIntance(context).abstractsDao().loadByType("已读");
+        myAbstractRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     private void showDetailedAbstract(int position) {

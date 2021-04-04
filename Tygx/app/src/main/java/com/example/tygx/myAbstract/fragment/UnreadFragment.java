@@ -211,8 +211,8 @@ public class UnreadFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
         dividerItemDecoration.setDrawable(new ColorDrawable(ContextCompat.getColor(context, android.R.color.darker_gray)));
         recyclerView.addItemDecoration(dividerItemDecoration);
-        if(items.size() > 0)
-            checkRefresh();
+//        if(items.size() > 0)
+        checkRefresh();
         return binding.getRoot();
     }
 
@@ -225,25 +225,25 @@ public class UnreadFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        int i = 0;
-        SharedPreferences sPreferences = context.getSharedPreferences("taskList", Context.MODE_PRIVATE);
-        Set<String> unreadTaskSet;
-        if(sPreferences.contains("unreadTaskSet")) {
-            unreadTaskSet = sPreferences.getStringSet("unreadTaskSet", new HashSet<String>());
-        }else {
-            unreadTaskSet = new HashSet<>();
-        }
-        for(String jobId: unreadTaskSet){
-            myAbstractRecyclerViewAdapter.notifyItemChanged(i);
-            i++;
-        }
+//        int i = 0;
+//        SharedPreferences sPreferences = context.getSharedPreferences("taskList", Context.MODE_PRIVATE);
+//        Set<String> unreadTaskSet;
+//        if(sPreferences.contains("unreadTaskSet")) {
+//            unreadTaskSet = sPreferences.getStringSet("unreadTaskSet", new HashSet<String>());
+//        }else {
+//            unreadTaskSet = new HashSet<>();
+//        }
+//        for(String jobId: unreadTaskSet){
+//            myAbstractRecyclerViewAdapter.notifyItemChanged(i);
+//            i++;
+//        }
     }
 
     public void checkRefresh(){
         handler.postDelayed(mRunnable, 5000);
-        loadService = LoadSir.getDefault().register(recyclerView, (Callback.OnReloadListener) v -> {
-
-        });
+//        loadService = LoadSir.getDefault().register(recyclerView, (Callback.OnReloadListener) v -> {
+//
+//        });
         for(Abstract item : items){
             new Thread(new Runnable() {
                 @Override
@@ -299,6 +299,8 @@ public class UnreadFragment extends Fragment {
         intent.putExtra("jobId",item.getJobId());
         item.setType("已读");
         AbstractsManager.getIntance(context).abstractsDao().update(item);
+        items.remove(position);
+        myAbstractRecyclerViewAdapter.notifyItemRemoved(position);
         startActivity(intent);
     }
 

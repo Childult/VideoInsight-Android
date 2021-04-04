@@ -55,6 +55,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -169,6 +171,11 @@ public class InputUrl extends BaseActivity {
         inflate.buttonConfirmInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String url = inflate.textInputUrl.getText().toString();
+                Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+                Matcher m = p.matcher(url);
+                url = m.replaceAll("");
+                inflate.textInputUrl.setText(url);
                 if(inflate.textInputUrl.testValidity()){
                     new Thread(new Runnable() {
                         @Override
@@ -179,6 +186,7 @@ public class InputUrl extends BaseActivity {
                                     url = "https://www.bilibili.com/video/BV1Bv411k745";
                                     Global.fID = "test";
                                 }
+                                Log.d("FID:",Global.fID);
 //                                new GetTask(createTask, "667ecee481cec71cfc784457").send();
                                 new PostCreateTask(createTask, url, Global.fID).sendJson();
                             } catch (Exception e) {
