@@ -32,26 +32,25 @@
                 android:text="@string/pic_text_text"
                 android:textSize="18sp"
                 android:layout_marginTop="34dp"
-                android:background="@drawable/textview_background"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/banner"/>
 
-            <Button
-                android:id="@+id/button_edit"
-                android:layout_width="83dp"
-                android:layout_height="48dp"
-                android:layout_marginTop="98dp"
-                android:layout_marginStart="95dp"
-                android:background="@drawable/textview_background"
-                android:enabled="true"
-                android:text="@string/pic_text_edit"
-                android:textColor="#777777"
-                android:textSize="18sp"
-                android:layout_marginBottom="30dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/pic_text_text_view"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+<!--            <Button-->
+<!--                android:id="@+id/button_edit"-->
+<!--                android:layout_width="83dp"-->
+<!--                android:layout_height="48dp"-->
+<!--                android:layout_marginTop="98dp"-->
+<!--                android:layout_marginStart="95dp"-->
+<!--                android:background="@drawable/textview_background"-->
+<!--                android:enabled="true"-->
+<!--                android:text="@string/pic_text_edit"-->
+<!--                android:textColor="#777777"-->
+<!--                android:textSize="18sp"-->
+<!--                android:layout_marginBottom="30dp"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/pic_text_text_view"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"/>-->
 
             <Button
                 android:id="@+id/button_reset"

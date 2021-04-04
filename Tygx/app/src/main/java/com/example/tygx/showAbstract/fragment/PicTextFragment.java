@@ -67,7 +67,7 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
             int text_index = 0;
             while (text_index < textArray.length()) {
                 sb.append(textArray.get(text_index).toString());
-                sb.append("\n");
+                sb.append("\n\n\n\n");
                 text_index++;
             }
             text = sb.toString();
