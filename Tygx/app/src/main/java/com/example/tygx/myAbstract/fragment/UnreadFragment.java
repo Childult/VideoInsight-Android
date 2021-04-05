@@ -202,7 +202,7 @@ public class UnreadFragment extends Fragment {
         myAbstractRecyclerViewAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                if(items.get(position).message.equals("完成"))
+                if(items.get(position).message.equals("任务已完成"))
                     showDetailedAbstract(position);
                 else{
                     mActivity.runOnUiThread(() -> {
@@ -297,7 +297,7 @@ public class UnreadFragment extends Fragment {
                 Abstract mAbstract = AbstractsManager.getIntance(context).abstractsDao().loadByJobId(jobId);
                 mAbstract.setMessage(message);
                 mAbstract.setStatus(status);
-                if(message.equals("完成")){
+                if(message.equals("任务已完成")){
                     mActivity.runOnUiThread(()->new  AlertDialog.Builder(mActivity)
                             .setTitle("摘要任务完成" )
                             .setMessage(jobId + "摘要任务完成" )
