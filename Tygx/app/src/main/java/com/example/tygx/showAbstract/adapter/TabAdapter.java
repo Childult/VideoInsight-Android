@@ -22,7 +22,7 @@ public class TabAdapter extends FragmentStateAdapter {
 //    private static final int ONLY_TEXT = 1;
 //    private static final int SUBSECTION = 2;
 //    private static final int SUBTITLE = 3;
-    private static final int VIDEO_CAPTION = 1;
+//    private static final int VIDEO_CAPTION = 1;
     private String jobId;
 
     SparseArray<Fragment> fragments = new SparseArray<>();
@@ -34,7 +34,7 @@ public class TabAdapter extends FragmentStateAdapter {
 //        fragments.put(ONLY_TEXT, OnlyTextFragment.getInstance(1, jobId));
 //        fragments.put(SUBSECTION, SubsectionFragment.getInstance(2, jobId));
 //        fragments.put(SUBTITLE, SubtitleFragment.getInstance(3, jobId));
-        fragments.put(VIDEO_CAPTION, VideoCaptionFragment.getInstance(1,jobId));
+//        fragments.put(VIDEO_CAPTION, VideoCaptionFragment.getInstance(1,jobId));
         this.jobId = jobId;
     }
 
@@ -75,14 +75,14 @@ public class TabAdapter extends FragmentStateAdapter {
 //                    fragment = fragments.get(SUBTITLE);
 //                }
 //                break;
-            case VIDEO_CAPTION:
-                if(fragments.get(VIDEO_CAPTION) == null) {
-                    fragment = PicTextFragment.getInstance(1, jobId);
-                    fragments.put(VIDEO_CAPTION, fragment);
-                } else {
-                    fragment = fragments.get(VIDEO_CAPTION);
-                }
-                break;
+//            case VIDEO_CAPTION:
+//                if(fragments.get(VIDEO_CAPTION) == null) {
+//                    fragment = PicTextFragment.getInstance(1, jobId);
+//                    fragments.put(VIDEO_CAPTION, fragment);
+//                } else {
+//                    fragment = fragments.get(VIDEO_CAPTION);
+//                }
+//                break;
             default:
                 throw new IllegalStateException("Unexpected value: " + position);
         }
