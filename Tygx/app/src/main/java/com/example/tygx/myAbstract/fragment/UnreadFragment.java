@@ -257,7 +257,7 @@ public class UnreadFragment extends Fragment {
     }
 
     public void checkRefresh(){
-        handler.postDelayed(mRunnable, 5000);
+        handler.postDelayed(mRunnable, Global.POLLING_INTERVAL);
 //        loadService = LoadSir.getDefault().register(recyclerView, (Callback.OnReloadListener) v -> {
 //
 //        });
