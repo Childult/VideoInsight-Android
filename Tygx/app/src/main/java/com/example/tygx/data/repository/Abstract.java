@@ -28,7 +28,8 @@ public class Abstract {
     @ColumnInfo(name = "message")
     public String message;
 
-
+    @ColumnInfo(name = "title")
+    public String title;
 
     public Abstract(String jobId, String result, String status, String type, String url, String message){
         this.jobId = jobId;
@@ -37,6 +38,7 @@ public class Abstract {
         this.type = type;
         this.url = url;
         this.message = message;
+        this.title = "";
     }
 
     @Ignore
@@ -47,6 +49,7 @@ public class Abstract {
         this.type = "";
         this.url = url;
         this.message = "";
+        this.title = "";
     }
 
     @Ignore
@@ -57,6 +60,7 @@ public class Abstract {
         this.type = type;
         this.url = url;
         this.message = "";
+        this.title = "";
     }
 
     public String getJobId() {
@@ -105,5 +109,13 @@ public class Abstract {
 
     public void setMessage(String message){
         this.message = message;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
