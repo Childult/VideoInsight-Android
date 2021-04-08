@@ -36,8 +36,7 @@ public class MyAbstractRecyclerViewAdapter<T> extends BaseQuickAdapter<T, BaseVi
     protected View mView;
     protected TextView mUrl;
     protected TextView mMessage;
-    protected TextView mStatus;
-    protected TextView mJobId;
+    protected TextView mTitle;
 
     public MyAbstractRecyclerViewAdapter(List<T> items, Context context) {
         super(R.layout.fragment_done_abstract, items);
@@ -61,15 +60,13 @@ public class MyAbstractRecyclerViewAdapter<T> extends BaseQuickAdapter<T, BaseVi
     protected void initData(BaseViewHolder viewHolder, T t){
 
         Abstract data = (Abstract) t;
-        viewHolder.setText(R.id.job_id,"jobId: "+data.getJobId());
-        viewHolder.setText(R.id.url,"url: "+data.getUrl());
-        viewHolder.setText(R.id.status,"status: "+data.getStatus());
-        viewHolder.setText(R.id.message,"message: "+data.getMessage());
+        viewHolder.setText(R.id.url,"URL: "+data.getUrl());
+        viewHolder.setText(R.id.title,"标题: "+data.getTitle());
+        viewHolder.setText(R.id.message,"状态: "+data.getMessage());
 
         mView = viewHolder.itemView;
-        mJobId = viewHolder.getView(R.id.job_id);
         mUrl = viewHolder.getView(R.id.url);
-        mStatus = viewHolder.getView(R.id.status);
+        mTitle = viewHolder.getView(R.id.title);
         mMessage = viewHolder.getView(R.id.message);
     }
 

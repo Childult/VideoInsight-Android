@@ -35,8 +35,8 @@ public class DataBean {
 
     public static List<DataBean> getTestData(){
         List<DataBean> list = new ArrayList<>();
-        list.add(new DataBean(R.drawable.image1, "1", 3));
-        list.add(new DataBean(R.drawable.image2, "2", 3));
+//        list.add(new DataBean(R.drawable.image1, "1", 3));
+//        list.add(new DataBean(R.drawable.image2, "2", 3));
         return list;
     }
 

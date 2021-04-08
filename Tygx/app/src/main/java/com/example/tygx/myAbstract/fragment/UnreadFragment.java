@@ -36,6 +36,7 @@ import com.example.tygx.request.GetTask;
 import com.example.tygx.request.PostCreateTask;
 import com.example.tygx.showAbstract.ShowAbstract;
 import com.example.tygx.utils.Global;
+import com.example.tygx.utils.Status;
 import com.kingja.loadsir.callback.Callback;
 import com.kingja.loadsir.core.LoadService;
 import com.kingja.loadsir.core.LoadSir;
@@ -100,20 +101,25 @@ public class UnreadFragment extends Fragment {
                     mActivity.runOnUiThread(() -> {
                         Toast toast = Toast.makeText(mActivity, "获取任务状态失败", Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.TOP, 0, 0);
-                        toast.show();});
+                        toast.show();
+                    });
                 } else {
                     ResponseBody responseBody = response.body();
                     String responseBodyString = responseBody != null ? responseBody.string() : "";
                     if (Global.HTTP_DEBUG_MODE)
                         Log.e("HttpResponse", responseBodyString);
                     JSONObject jsonObject = new JSONObject(responseBodyString);
-                    int status = (int) jsonObject.get("status");
-                    String message = jsonObject.get("message").toString();
+
+                    String title = jsonObject.getString("title").trim();
+                    Status status = Status.values()[jsonObject.getInt("status")];
+                    String message = status.toString();
+//                    int status = (int) jsonObject.get("status");
+//                    String message = jsonObject.get("message").toString();
 
                     String result = "";
                     try {
                         result = jsonObject.get("result").toString();
-                    }catch (JSONException e){
+                    } catch (JSONException e) {
                     }
                     String[] url = call.request().url().toString().split("/");
                     String finalResult = result;
@@ -121,7 +127,8 @@ public class UnreadFragment extends Fragment {
                         //Toast toast = Toast.makeText(mActivity, message, Toast.LENGTH_LONG);
                         //toast.setGravity(Gravity.TOP, 0, 0);
                         //toast.show();
-                        refresh(url[url.length - 1],message, finalResult, String.valueOf(status));
+                        // 更新任务信息
+                        refresh(url[url.length - 1], message, finalResult, String.valueOf(status), title);
                     });
                 }
             } catch (JSONException e) {
@@ -133,18 +140,23 @@ public class UnreadFragment extends Fragment {
                 if (Global.HTTP_DEBUG_MODE)
                     Log.e("HttpResponse", e.toString());
             }
-            mActivity.runOnUiThread(() -> {if (loadService != null)
-                loadService.showSuccess();});
+            mActivity.runOnUiThread(() -> {
+                if (loadService != null)
+                    loadService.showSuccess();
+            });
         }
 
         @Override
         public void onFailure(@NotNull Call call, @NotNull IOException e) {
-            mActivity.runOnUiThread(() -> {if (loadService != null)
-                loadService.showSuccess();});
+            mActivity.runOnUiThread(() -> {
+                if (loadService != null)
+                    loadService.showSuccess();
+            });
             mActivity.runOnUiThread(() -> {
                 Toast toast = Toast.makeText(mActivity, "获取任务状态失败", Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.TOP, 0, 0);
-                toast.show();});
+                toast.show();
+            });
             if (Global.HTTP_DEBUG_MODE)
                 Log.e("HttpError", e.toString());
         }
@@ -170,9 +182,9 @@ public class UnreadFragment extends Fragment {
     }
 
     @Override
-    public View  onCreateView (@NotNull LayoutInflater inflater,
-                               ViewGroup container,
-                               Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = com.example.tygx.databinding.FragmentDoneAbstractListBinding.inflate(inflater, container, false);
         recyclerView = binding.recyclerView;
@@ -202,11 +214,20 @@ public class UnreadFragment extends Fragment {
         myAbstractRecyclerViewAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                if(items.get(position).message.equals("任务已完成"))
+                if (items.get(position).message.equals(Status.DONE.toString()))
+                    // 若任务已完成，显示详情
                     showDetailedAbstract(position);
-                else{
+                else if (items.get(position).message.equals(Status.CREATED.toString())) {
+                    // 任务处理中，显示提示信息
                     mActivity.runOnUiThread(() -> {
-                        Toast toast = Toast.makeText(mActivity, "任务还未完成，请稍等", Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(mActivity, "任务未完成，请稍等", Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.TOP, 0, 0);
+                        toast.show();
+                    });
+                } else if (items.get(position).message.equals(Status.RETRIEVE_ERR.toString())) {
+                    // 任务异常，显示提示信息
+                    mActivity.runOnUiThread(() -> {
+                        Toast toast = Toast.makeText(mActivity, "任务异常，请重新创建", Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.TOP, 0, 0);
                         toast.show();
                     });
@@ -256,22 +277,23 @@ public class UnreadFragment extends Fragment {
 //        }
     }
 
-    public void checkRefresh(){
-        handler.postDelayed(mRunnable, 5000);
+    public void checkRefresh() {
+        handler.postDelayed(mRunnable, Global.POLLING_INTERVAL);
 //        loadService = LoadSir.getDefault().register(recyclerView, (Callback.OnReloadListener) v -> {
 //
 //        });
-        for(Abstract item : items){
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
+        for (Abstract item : items) {
+            // 只查询处理中的任务进度
+            String msg = item.getMessage();
+            if (msg.equals(Status.CREATED.toString()) || msg.equals("")) {
+                new Thread(() -> {
                     try {
                         new GetTask(getTask, item.getJobId()).send();
                     } catch (Exception e) {
                         Log.e("exception", e.toString());
                     }
-                }
-            }).start();
+                }).start();
+            }
         }
     }
 
@@ -290,18 +312,19 @@ public class UnreadFragment extends Fragment {
         }
     }*/
 
-    public void refresh(String jobId, String message, String result, String status){
+    public void refresh(String jobId, String message, String result, String status, String title) {
         int i = 0;
-        for(Abstract item : items){
-            if(item.getJobId().equals(jobId) && !item.message.equals(message)){
+        for (Abstract item : items) {
+            if (item.getJobId().equals(jobId) && !item.message.equals(message)) {
                 Abstract mAbstract = AbstractsManager.getIntance(context).abstractsDao().loadByJobId(jobId);
                 mAbstract.setMessage(message);
                 mAbstract.setStatus(status);
-                if(message.equals("任务已完成")){
-                    mActivity.runOnUiThread(()->new  AlertDialog.Builder(mActivity)
-                            .setTitle("摘要任务完成" )
-                            .setMessage(jobId + "摘要任务完成" )
-                            .setPositiveButton("确定" ,  null )
+                mAbstract.setTitle(title);
+                if (message.equals(Status.DONE.toString())) {
+                    mActivity.runOnUiThread(() -> new AlertDialog.Builder(mActivity)
+                            .setTitle("摘要任务已完成！")
+                            .setMessage("")
+                            .setPositiveButton("确定", null)
                             .show());
                     mAbstract.setResult(result);
                 }
@@ -318,7 +341,7 @@ public class UnreadFragment extends Fragment {
         Abstract item = items.get(position);
         //using sharedPreference
         //TaskListSharedPreference.changeTaskToREAD(context, item.jobId);
-        intent.putExtra("jobId",item.getJobId());
+        intent.putExtra("jobId", item.getJobId());
         item.setType("已读");
         AbstractsManager.getIntance(context).abstractsDao().update(item);
         items.remove(position);
@@ -339,8 +362,8 @@ public class UnreadFragment extends Fragment {
         super.onAttach(context);
         //保存activity引用
 
-        if (context instanceof Activity){
-            this.mActivity=(Activity) context;
+        if (context instanceof Activity) {
+            this.mActivity = (Activity) context;
         }
     }
 }

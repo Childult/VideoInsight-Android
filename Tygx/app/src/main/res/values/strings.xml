@@ -16,7 +16,7 @@
     <string name="main_window_start"> 一键开始 </string>
     <string name="main_window_my_abstract">我的摘要</string>
     <string name="main_window_help">帮助说明</string>
-    <string name="input_url_keyword">请输入关键词（可选）</string>
+    <string name="input_url_keyword">请输入关键词，使用空格分隔（可选）</string>
     <string name="switch_on">开</string>
     <string name="switch_off">关</string>
     <string name="input_url_toolbar">输入url和关键词</string>

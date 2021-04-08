@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "598fb4bb4e54ef2b4291ea55ef2bbce8",
+    "identityHash": "7d0ef34500db1ebf6e11f33e9c452870",
     "entities": [
       {
         "tableName": "abstracts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`jobId` TEXT NOT NULL, `result` TEXT, `status` TEXT, `type` TEXT, `url` TEXT, `message` TEXT, PRIMARY KEY(`jobId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`jobId` TEXT NOT NULL, `result` TEXT, `status` TEXT, `type` TEXT, `url` TEXT, `message` TEXT, `title` TEXT, `keywords` TEXT, PRIMARY KEY(`jobId`))",
         "fields": [
           {
             "fieldPath": "jobId",
@@ -43,6 +43,18 @@
             "columnName": "message",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "keywords",
+            "columnName": "keywords",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -67,7 +79,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '598fb4bb4e54ef2b4291ea55ef2bbce8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7d0ef34500db1ebf6e11f33e9c452870')"
     ]
   }
 }
