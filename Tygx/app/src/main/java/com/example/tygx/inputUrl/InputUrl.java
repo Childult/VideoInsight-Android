@@ -187,9 +187,9 @@ public class InputUrl extends BaseActivity {
         });
         inflate.toolbarInputUrl.setNavigationContentDescription("返回");
         //沉浸式状态栏设置
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-//        getWindow().setStatusBarColor(Color.TRANSPARENT);//设置statusbar为透明色
+//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);//设置statusbar为透明色
         getWindow().setNavigationBarColor(Color.TRANSPARENT);//设置NavigationBar为透明色
 
         Log.d("fID", "fID: " + Global.fID);
@@ -210,10 +210,10 @@ public class InputUrl extends BaseActivity {
                         public void run() {
                             try {
                                 String url = inflate.textInputUrl.getText().toString();
-                                if (Global.HTTP_DEBUG_MODE) {
-                                    url = "https://www.bilibili.com/video/BV1Bv411k745";
-                                    Global.fID = "test";
-                                }
+//                                if (Global.HTTP_DEBUG_MODE) {
+//                                    url = "https://www.bilibili.com/video/BV1Bv411k745";
+//                                    Global.fID = "test";
+//                                }
                                 Log.d("FID:", Global.fID);
 //                                new GetTask(createTask, "667ecee481cec71cfc784457").send();
                                 new PostCreateTask(createTask, url, Global.fID, keywords).sendJson();

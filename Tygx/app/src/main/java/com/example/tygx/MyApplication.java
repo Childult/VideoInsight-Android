@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.tygx.utils.AIUnit;
 import com.example.tygx.utils.Global;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -42,7 +43,13 @@ public class MyApplication extends Application {
                 .setDefaultCallback(ProgressCallback.class) //设置默认状态页
                 .commit();
 
+        Global.CONTEXT = getApplicationContext();
+        Global.AIUNIT = new AIUnit(Global.CONTEXT);
+    }
 
-
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        Global.AIUNIT.release();
     }
 }

@@ -6,13 +6,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.example.tygx.databinding.ActivityMainWindowBinding;
 import com.example.tygx.inputUrl.InputUrl;
 import com.example.tygx.myAbstract.MyAbstract;
 import com.example.tygx.showAbstract.ShowAbstract;
+import com.example.tygx.utils.AIUnit;
 import com.example.tygx.utils.BaseActivity;
 import com.example.tygx.utils.Global;
 
@@ -29,12 +32,12 @@ public class MainWindow extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(Global.HTTP_DEBUG_MODE){
-            SharedPreferences sPreferences = this.getSharedPreferences("taskList", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sPreferences.edit();
-            editor.clear();
-            editor.apply();
-        }
+//        if(Global.HTTP_DEBUG_MODE){
+//            SharedPreferences sPreferences = this.getSharedPreferences("taskList", Context.MODE_PRIVATE);
+//            SharedPreferences.Editor editor = sPreferences.edit();
+//            editor.clear();
+//            editor.apply();
+//        }
 
         ActivityMainWindowBinding inflate = ActivityMainWindowBinding.inflate(getLayoutInflater());
         setContentView(inflate.getRoot());
@@ -62,11 +65,16 @@ public class MainWindow extends BaseActivity {
         });
 
         //帮助说明
-        inflate.buttonHelp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
+//        inflate.buttonHelp.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//            }
+//        });
+
+//        this.runOnUiThread(() -> {
+//            // 初始化AI Unit服务
+//            AIUnit.init(getApplicationContext());
+//        });
     }
 
 

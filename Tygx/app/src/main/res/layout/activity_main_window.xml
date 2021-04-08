@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:text="@string/welcome_words"
         android:textSize="28sp"
-        android:layout_marginTop="205dp"
+        android:layout_marginTop="245dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -20,7 +20,7 @@
         android:id="@+id/button_start"
         android:layout_width="154dp"
         android:layout_height="48dp"
-        android:layout_marginTop="315dp"
+        android:layout_marginTop="360dp"
         android:background="@drawable/textview_background"
         android:enabled="true"
         android:text="@string/main_window_start"
@@ -34,7 +34,7 @@
         android:id="@+id/button_my_abstract"
         android:layout_width="154dp"
         android:layout_height="48dp"
-        android:layout_marginTop="407dp"
+        android:layout_marginTop="457dp"
         android:background="@drawable/textview_background"
         android:enabled="true"
         android:text="@string/main_window_my_abstract"
@@ -44,25 +44,25 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <Button
-        android:id="@+id/button_help"
-        android:layout_width="154dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="499dp"
-        android:background="@drawable/textview_background"
-        android:enabled="true"
-        android:text="@string/main_window_help"
-        android:textColor="#777777"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+<!--    <Button-->
+<!--        android:id="@+id/button_help"-->
+<!--        android:layout_width="154dp"-->
+<!--        android:layout_height="48dp"-->
+<!--        android:layout_marginTop="499dp"-->
+<!--        android:background="@drawable/textview_background"-->
+<!--        android:enabled="true"-->
+<!--        android:text="@string/main_window_help"-->
+<!--        android:textColor="#777777"-->
+<!--        android:textSize="18sp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"/>-->
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="140dp"
         android:layout_height="174dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="58dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"

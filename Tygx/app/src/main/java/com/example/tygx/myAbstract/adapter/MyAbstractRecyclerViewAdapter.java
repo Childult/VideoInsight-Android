@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class MyAbstractRecyclerViewAdapter<T> extends BaseQuickAdapter<T, BaseViewHolder>  {
 
-    private final List<T> mValues;
+    private List<T> mValues;
     protected View mHeaderView;
     protected View mFooterView;
     protected Context mContext;

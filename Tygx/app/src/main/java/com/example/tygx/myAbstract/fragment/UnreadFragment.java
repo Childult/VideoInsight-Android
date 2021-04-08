@@ -3,6 +3,7 @@ package com.example.tygx.myAbstract.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
@@ -162,9 +163,6 @@ public class UnreadFragment extends Fragment {
         }
     };
 
-//    public void
-
-
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -211,36 +209,61 @@ public class UnreadFragment extends Fragment {
         myAbstractRecyclerViewAdapter = new MyAbstractRecyclerViewAdapter<>(items, context);
         recyclerView.setAdapter(myAbstractRecyclerViewAdapter);
         // 设置点击事件
-        myAbstractRecyclerViewAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                if (items.get(position).message.equals(Status.DONE.toString()))
-                    // 若任务已完成，显示详情
-                    showDetailedAbstract(position);
-                else if (items.get(position).message.equals(Status.CREATED.toString())) {
-                    // 任务处理中，显示提示信息
-                    mActivity.runOnUiThread(() -> {
-                        Toast toast = Toast.makeText(mActivity, "任务未完成，请稍等", Toast.LENGTH_LONG);
-                        toast.setGravity(Gravity.TOP, 0, 0);
-                        toast.show();
-                    });
-                } else if (items.get(position).message.equals(Status.RETRIEVE_ERR.toString())) {
-                    // 任务异常，显示提示信息
-                    mActivity.runOnUiThread(() -> {
-                        Toast toast = Toast.makeText(mActivity, "任务异常，请重新创建", Toast.LENGTH_LONG);
-                        toast.setGravity(Gravity.TOP, 0, 0);
-                        toast.show();
-                    });
-                }
+        myAbstractRecyclerViewAdapter.setOnItemClickListener((adapter, view, position) -> {
+            if (items.get(position).message.equals(Status.DONE.toString()))
+                // 若任务已完成，显示详情
+                showDetailedAbstract(position);
+            else if (items.get(position).message.equals(Status.CREATED.toString())) {
+                // 任务处理中，显示提示信息
+                mActivity.runOnUiThread(() -> {
+                    Toast toast = Toast.makeText(mActivity, "任务未完成，请稍等", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.TOP, 0, 0);
+                    toast.show();
+                });
+            } else if (items.get(position).message.equals(Status.RETRIEVE_ERR.toString())) {
+                // 任务异常，显示提示信息
+                mActivity.runOnUiThread(() -> {
+                    Toast toast = Toast.makeText(mActivity, "任务异常，请重新创建", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.TOP, 0, 0);
+                    toast.show();
+                });
             }
+        });
+
+        // 设置长按删除事件
+        myAbstractRecyclerViewAdapter.setOnItemLongClickListener((adapter, view, position) -> {
+
+            mActivity.runOnUiThread(() -> new AlertDialog.Builder(mActivity)
+                    .setTitle("提示")
+                    .setMessage("是否确认删除该条摘要任务？")
+                    .setPositiveButton("是", (dialog, which) -> {
+                        Abstract mAbstract = AbstractsManager.getIntance(context).abstractsDao().loadByJobId(items.get(position).getJobId());
+                        AbstractsManager.getIntance(context).abstractsDao().delete(mAbstract);
+                        items.remove(position);
+                        myAbstractRecyclerViewAdapter.notifyItemRemoved(position);
+                    })
+                    .setNegativeButton("否", null)
+                    .show());
+            return false;
         });
 
         refreshLayout = binding.refreshLayout;
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                items = AbstractsManager.getIntance(context).abstractsDao().loadByType("未读");
-                myAbstractRecyclerViewAdapter.notifyDataSetChanged();
+                for (Abstract item : items) {
+                    // 只查询处理中的任务进度
+                    String msg = item.getMessage();
+//            if (msg.equals(Status.CREATED.toString()) || msg.equals("")) {
+                    new Thread(() -> {
+                        try {
+                            new GetTask(getTask, item.getJobId()).send();
+                        } catch (Exception e) {
+                            Log.e("exception", e.toString());
+                        }
+                    }).start();
+//            }
+                }
                 refreshLayout.finishRefresh(1000);
             }
         });
@@ -285,15 +308,15 @@ public class UnreadFragment extends Fragment {
         for (Abstract item : items) {
             // 只查询处理中的任务进度
             String msg = item.getMessage();
-            if (msg.equals(Status.CREATED.toString()) || msg.equals("")) {
-                new Thread(() -> {
-                    try {
-                        new GetTask(getTask, item.getJobId()).send();
-                    } catch (Exception e) {
-                        Log.e("exception", e.toString());
-                    }
-                }).start();
-            }
+//            if (msg.equals(Status.CREATED.toString()) || msg.equals("")) {
+            new Thread(() -> {
+                try {
+                    new GetTask(getTask, item.getJobId()).send();
+                } catch (Exception e) {
+                    Log.e("exception", e.toString());
+                }
+            }).start();
+//            }
         }
     }
 
@@ -315,15 +338,15 @@ public class UnreadFragment extends Fragment {
     public void refresh(String jobId, String message, String result, String status, String title) {
         int i = 0;
         for (Abstract item : items) {
-            if (item.getJobId().equals(jobId) && !item.message.equals(message)) {
+            if (item.getJobId().equals(jobId) && (!item.message.equals(message) || !item.getTitle().equals(title))) {
                 Abstract mAbstract = AbstractsManager.getIntance(context).abstractsDao().loadByJobId(jobId);
                 mAbstract.setMessage(message);
                 mAbstract.setStatus(status);
                 mAbstract.setTitle(title);
                 if (message.equals(Status.DONE.toString())) {
                     mActivity.runOnUiThread(() -> new AlertDialog.Builder(mActivity)
-                            .setTitle("摘要任务已完成！")
-                            .setMessage("")
+                            .setTitle("提示")
+                            .setMessage("摘要任务已完成！")
                             .setPositiveButton("确定", null)
                             .show());
                     mAbstract.setResult(result);

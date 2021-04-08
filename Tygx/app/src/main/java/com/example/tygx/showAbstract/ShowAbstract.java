@@ -1,6 +1,7 @@
 package com.example.tygx.showAbstract;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,10 @@ public class ShowAbstract extends BaseActivity {
         //用户是否允许输入
         inflate.viewPager.setUserInputEnabled(true);
 
+        //沉浸式状态栏设置
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);//设置statusbar为透明色
+        getWindow().setNavigationBarColor(Color.TRANSPARENT);//设置NavigationBar为透明色
         // 图片和摘要，迁移至fragment
 //        Banner banner = inflate.banner;
 //        banner.setAdapter(new BannerImageAdapter<DataBean>(DataBean.getTestData()) {
