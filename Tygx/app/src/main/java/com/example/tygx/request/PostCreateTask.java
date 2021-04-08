@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.tygx.request.base.BasePostRequest;
 import com.example.tygx.utils.Global;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -12,7 +13,7 @@ import org.json.JSONStringer;
 import okhttp3.Callback;
 
 public class PostCreateTask extends BasePostRequest {
-    public PostCreateTask(Callback callback, String url, String deviceID) {
+    public PostCreateTask(Callback callback, String url, String deviceID, String[] keywords) {
         // 设置请求URL
         this.to("/job");
         // 设置json参数
@@ -20,6 +21,10 @@ public class PostCreateTask extends BasePostRequest {
         try{
             json.put("url", url);
             json.put("device_id", deviceID);
+            if (keywords.length > 0) {
+                JSONArray kws = new JSONArray(keywords);
+                json.put("keywords", kws);
+            }
         }catch (JSONException e) {
             e.printStackTrace();
             Log.e("PostCreateTask", "PostCreateTask: 错误");

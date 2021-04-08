@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ import com.example.tygx.showAbstract.ShowAbstract;
 import com.example.tygx.ui.login.LoginActivity;
 import com.example.tygx.utils.BaseActivity;
 import com.example.tygx.utils.Global;
+import com.example.tygx.utils.Status;
 import com.example.tygx.utils.Valid;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -46,6 +48,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.installations.FirebaseInstallations;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,6 +56,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -70,9 +74,9 @@ import okhttp3.ResponseBody;
 import okio.Buffer;
 
 /*
-* 输入网页url以及关键词的页面
-* 点击后进入摘要展示页面
-*/
+ * 输入网页url以及关键词的页面
+ * 点击后进入摘要展示页面
+ */
 public class InputUrl extends BaseActivity {
 
     private static final int REQ_ABSTRACT = 1;
@@ -87,24 +91,26 @@ public class InputUrl extends BaseActivity {
             try {
                 if (response.code() != 200) {
                     InputUrl.this.runOnUiThread(() -> {
-                        Toast toast = Toast.makeText(InputUrl.this, "url上传失败1", Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(InputUrl.this, "服务异常，请重试", Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.TOP, 0, 0);
-                        toast.show();});
+                        toast.show();
+                    });
                 } else {
                     ResponseBody responseBody = response.body();
                     String responseBodyString = responseBody != null ? responseBody.string() : "";
                     if (Global.HTTP_DEBUG_MODE)
                         Log.e("HttpResponse", responseBodyString);
                     JSONObject jsonObject = new JSONObject(responseBodyString);
-                    int status = (int) jsonObject.get("status");
-                    String message = jsonObject.get("message").toString();
+                    Status status = Status.values()[(int) jsonObject.get("status")];
+                    String message = status.toString();
+//                    String message = jsonObject.get("message").toString();
                     String result = jsonObject.get("result").toString();
                     JSONObject resultJson = new JSONObject(result);
                     String jobId = resultJson.get("job_id").toString();
                     //using sharedPreference
                     //TaskListSharedPreference.addUnreadTask(InputUrl.this,jobId);
                     //using Room
-                    RequestBody requestBody= call.request().body();
+                    RequestBody requestBody = call.request().body();
                     Buffer buffer = new Buffer();
                     requestBody.writeTo(buffer);
                     Charset charset = StandardCharsets.UTF_8;
@@ -116,7 +122,20 @@ public class InputUrl extends BaseActivity {
 
                     JSONObject requestJson = new JSONObject(requestBodyString);
                     String url = requestJson.get("url").toString();
-                    Abstract newAbstract = new Abstract(jobId, url, "未读");
+                    String[] kws_arr;
+                    Abstract newAbstract;
+                    if (requestJson.has("keywords")) {
+                        JSONArray arr = requestJson.getJSONArray("keywords");
+                        kws_arr = new String[arr.length()];
+                        for (int i = 0; i < arr.length(); i++) {
+                            kws_arr[i] = arr.get(i).toString();
+                        }
+                        String kws = String.join(" ", kws_arr);
+                        newAbstract = new Abstract(jobId, url, "未读", kws);
+                    } else {
+                        newAbstract = new Abstract(jobId, url, "未读");
+                    }
+
                     AbstractsManager.getIntance(InputUrl.this).abstractsDao().insert(newAbstract);
 
                     InputUrl.this.runOnUiThread(() -> {
@@ -124,10 +143,13 @@ public class InputUrl extends BaseActivity {
                         toast.setGravity(Gravity.TOP, 0, 0);
                         toast.show();
                     });
+
+                    Intent intent = new Intent(InputUrl.this, MyAbstract.class);
+                    startActivityForResult(intent, REQ_ABSTRACT);
                 }
             } catch (JSONException e) {
                 InputUrl.this.runOnUiThread(() -> {
-                    Toast toast = Toast.makeText(InputUrl.this, "url上传失败2", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(InputUrl.this, "创建任务失败", Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.TOP, 0, 0);
                     toast.show();
                 });
@@ -138,12 +160,15 @@ public class InputUrl extends BaseActivity {
 
         @Override
         public void onFailure(@NotNull Call call, @NotNull IOException e) {
-            InputUrl.this.runOnUiThread(() -> {if (InputUrl.this.loadService != null)
-                InputUrl.this.loadService.showSuccess();});
             InputUrl.this.runOnUiThread(() -> {
-                Toast toast = Toast.makeText(InputUrl.this, "url上传失败3", Toast.LENGTH_LONG);
+                if (InputUrl.this.loadService != null)
+                    InputUrl.this.loadService.showSuccess();
+            });
+            InputUrl.this.runOnUiThread(() -> {
+                Toast toast = Toast.makeText(InputUrl.this, "创建任务失败，请检查网络设置", Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.TOP, 0, 0);
-                toast.show();});
+                toast.show();
+            });
             if (Global.HTTP_DEBUG_MODE)
                 Log.e("HttpError", e.toString());
         }
@@ -163,20 +188,23 @@ public class InputUrl extends BaseActivity {
         inflate.toolbarInputUrl.setNavigationContentDescription("返回");
         //沉浸式状态栏设置
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+//        getWindow().setStatusBarColor(Color.TRANSPARENT);//设置statusbar为透明色
+        getWindow().setNavigationBarColor(Color.TRANSPARENT);//设置NavigationBar为透明色
 
-
-        Log.d("fID", "fID: "+ Global.fID);
+        Log.d("fID", "fID: " + Global.fID);
         //自定义validator
         //inflate.textInputUrl.addValidator(new Valid.NotBlankValidator());
         inflate.buttonConfirmInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = inflate.textInputUrl.getText().toString();
+                String url = inflate.textInputUrl.getText().toString().trim();
+                String[] keywords = inflate.textInputKeyword.getText().toString().trim().split(" ");
                 Pattern p = Pattern.compile("\\s*|\t|\r|\n");
                 Matcher m = p.matcher(url);
                 url = m.replaceAll("");
                 inflate.textInputUrl.setText(url);
-                if(inflate.textInputUrl.testValidity()){
+                if (inflate.textInputUrl.testValidity()) {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -186,21 +214,17 @@ public class InputUrl extends BaseActivity {
                                     url = "https://www.bilibili.com/video/BV1Bv411k745";
                                     Global.fID = "test";
                                 }
-                                Log.d("FID:",Global.fID);
+                                Log.d("FID:", Global.fID);
 //                                new GetTask(createTask, "667ecee481cec71cfc784457").send();
-                                new PostCreateTask(createTask, url, Global.fID).sendJson();
+                                new PostCreateTask(createTask, url, Global.fID, keywords).sendJson();
                             } catch (Exception e) {
                                 Log.e("exception", e.toString());
                             }
                         }
                     }).start();
-                    Intent intent = new Intent(InputUrl.this, MyAbstract.class);
-                    startActivityForResult(intent, REQ_ABSTRACT);
                 }
             }
         });
     }
-
-
 }
 

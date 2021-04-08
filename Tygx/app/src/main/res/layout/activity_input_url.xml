@@ -72,18 +72,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:emptyAllowed="true"/>
 
-    <Switch
-        android:id="@+id/switch_keyword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="356dp"
-        android:text="@string/input_url_keyword_trigger"
-        android:switchPadding="138dp"
-        android:textOn="@string/switch_on"
-        android:textOff="@string/switch_off"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+<!--    <Switch-->
+<!--        android:id="@+id/switch_keyword"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="356dp"-->
+<!--        android:text="@string/input_url_keyword_trigger"-->
+<!--        android:switchPadding="138dp"-->
+<!--        android:textOn="@string/switch_on"-->
+<!--        android:textOff="@string/switch_off"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent" />-->
 
     <Button
         android:id="@+id/button_confirmInput"

@@ -31,6 +31,9 @@ public class Abstract {
     @ColumnInfo(name = "title")
     public String title;
 
+    @ColumnInfo(name = "keywords")
+    public String keywords;
+
     public Abstract(String jobId, String result, String status, String type, String url, String message){
         this.jobId = jobId;
         this.result = result;
@@ -39,6 +42,7 @@ public class Abstract {
         this.url = url;
         this.message = message;
         this.title = "";
+        this.keywords = "";
     }
 
     @Ignore
@@ -50,6 +54,7 @@ public class Abstract {
         this.url = url;
         this.message = "";
         this.title = "";
+        this.keywords = "";
     }
 
     @Ignore
@@ -61,6 +66,19 @@ public class Abstract {
         this.url = url;
         this.message = "";
         this.title = "";
+        this.keywords = "";
+    }
+
+    @Ignore
+    public Abstract(String jobId, String url, String type, String keywords){
+        this.jobId = jobId;
+        this.result = "";
+        this.status = "";
+        this.type = type;
+        this.url = url;
+        this.message = "";
+        this.title = "";
+        this.keywords = keywords;
     }
 
     public String getJobId() {
@@ -117,5 +135,13 @@ public class Abstract {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
     }
 }

@@ -143,6 +143,7 @@ public class ReadFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        // TODO：刷新页面
         items = AbstractsManager.getIntance(context).abstractsDao().loadByType("已读");
         myAbstractRecyclerViewAdapter.notifyDataSetChanged();
     }
