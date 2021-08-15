@@ -139,7 +139,7 @@ public class InputUrl extends BaseActivity {
                     AbstractsManager.getIntance(InputUrl.this).abstractsDao().insert(newAbstract);
 
                     InputUrl.this.runOnUiThread(() -> {
-                        Toast toast = Toast.makeText(InputUrl.this, message, Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(InputUrl.this, message, Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.TOP, 0, 0);
                         toast.show();
                     });
@@ -187,7 +187,6 @@ public class InputUrl extends BaseActivity {
         });
         inflate.toolbarInputUrl.setNavigationContentDescription("返回");
         //沉浸式状态栏设置
-//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         getWindow().setStatusBarColor(Color.TRANSPARENT);//设置statusbar为透明色
         getWindow().setNavigationBarColor(Color.TRANSPARENT);//设置NavigationBar为透明色

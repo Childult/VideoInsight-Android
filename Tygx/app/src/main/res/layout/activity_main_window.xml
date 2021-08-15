@@ -44,19 +44,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-<!--    <Button-->
-<!--        android:id="@+id/button_help"-->
-<!--        android:layout_width="154dp"-->
-<!--        android:layout_height="48dp"-->
-<!--        android:layout_marginTop="499dp"-->
-<!--        android:background="@drawable/textview_background"-->
-<!--        android:enabled="true"-->
-<!--        android:text="@string/main_window_help"-->
-<!--        android:textColor="#777777"-->
-<!--        android:textSize="18sp"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"/>-->
+    <Button
+        android:id="@+id/button_help"
+        android:layout_width="154dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="554dp"
+        android:background="@drawable/textview_background"
+        android:enabled="true"
+        android:text="@string/main_window_help"
+        android:textColor="#777777"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <ImageView
         android:id="@+id/imageView"

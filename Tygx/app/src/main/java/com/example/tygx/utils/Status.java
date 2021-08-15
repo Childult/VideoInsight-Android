@@ -1,5 +1,7 @@
 package com.example.tygx.utils;
 
+import androidx.annotation.NonNull;
+
 public enum Status {
     // 创建任务
     START(0, "处理中"),
@@ -23,6 +25,7 @@ public enum Status {
         this.statusMsg = statusMsg;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return this.statusMsg;

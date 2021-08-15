@@ -60,6 +60,9 @@ dependencies {
     //loadsir
     implementation 'com.kingja.loadsir:loadsir:1.3.8'
 
+    // notification
+    implementation "com.android.support:support-compat:30.0.0"
+
     //richeditor
 //    implementation 'jp.wasabeef:richeditor-android:2.0.0'
 //    implementation 'com.github.moonChenHaohui:android_richtext:2.0'

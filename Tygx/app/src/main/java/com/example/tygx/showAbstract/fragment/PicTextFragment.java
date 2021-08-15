@@ -18,7 +18,6 @@ import com.example.tygx.data.repository.AbstractsManager;
 import com.example.tygx.databinding.FragmentPicTextBinding;
 import com.example.tygx.showAbstract.adapter.ImageAdapter;
 import com.example.tygx.showAbstract.bean.DataBean;
-import com.example.tygx.utils.AIUnit;
 import com.example.tygx.utils.Global;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -45,7 +44,6 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
     Banner<DataBean, ImageAdapter> banner;
     List<DataBean> bannerImageList = Collections.synchronizedList(new ArrayList<>());
     List<DataBean> bannerImageListWithoutKW = Collections.synchronizedList(new ArrayList<>());
-//    AIUnit aiUnit;
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater,
@@ -60,15 +58,10 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
         jobId = getArguments().getString("jobId");
         Abstract mAbstract = AbstractsManager.getIntance(context).abstractsDao().loadByJobId(jobId);
         String[] keywords = mAbstract.getKeywords().split(" ");
-//        if (keywords.length > 0) {
-//            Log.i("PicText", "AI Unit 初始化");
-//            aiUnit = new AIUnit(Global.CONTEXT);
-//        }
-
         String result = mAbstract.getResult();
         StringBuilder sb = new StringBuilder();
         try {
-            //text
+            // 解析文本摘要
             JSONObject resultJson = new JSONObject(result);
             textArray = resultJson.getJSONArray("text");
             int text_index = 0;
@@ -81,8 +74,9 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
         } catch (JSONException e) {
             Log.e("textAbstract", "json load failed");
         }
+
         try {
-            //picture
+            // 解析关键帧图片数据
             JSONObject resultJson = new JSONObject(result);
             JSONObject pictureJson = new JSONObject(resultJson.get("pictures").toString());
             int frame_i = 1;
@@ -90,16 +84,17 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
             while (pictureJson.has(frame_key)) {
                 byte[] bitmapArray = Base64.decode(pictureJson.get(frame_key).toString(), Base64.DEFAULT);
 
+                // 如果设定了关键词，对关键帧图片进行OCR识别，检查识别结果中是否包含关键词
                 if (keywords.length > 0) {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
-                    List<String> res = Global.AIUNIT.OCR(bitmap);
+                    List<String> res = Global.SNPE.OCR(bitmap);
                     boolean hasKeywords = false;
-                    for (String sen: res) {
+                    for (String sen : res) {
                         if (hasKeywords) {
                             break;
                         }
 
-                        for (String kw: keywords) {
+                        for (String kw : keywords) {
                             // OCR结果中有关键词
                             if (sen.contains(kw)) {
                                 hasKeywords = true;
@@ -108,12 +103,14 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
                         }
                     }
 
+                    // 将包含关键词的图片和不含关键词的图片先分别存放
                     if (hasKeywords) {
                         bannerImageList.add(new DataBean(bitmapArray, null, 8));
                     } else {
                         bannerImageListWithoutKW.add(new DataBean(bitmapArray, null, 8));
                     }
                 } else {
+                    // 没有关键词，直接按照返回的顺序展示
                     bannerImageList.add(new DataBean(bitmapArray, null, 8));
                 }
 
@@ -126,9 +123,6 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
                 bannerImageList.addAll(bannerImageListWithoutKW);
             }
 
-//            if (aiUnit != null) {
-//                aiUnit.release();
-//            }
         } catch (JSONException e) {
             Log.e("videoAbstract", "json load failed");
         }
@@ -156,17 +150,15 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
         //--------------------------简单使用-------------------------------
         banner.setAdapter(new ImageAdapter(bannerImageList))
                 .addBannerLifecycleObserver(this)//添加生命周期观察者
-                .setIndicator(new CircleIndicator(this.getContext()));
-
+                .setIndicator(new CircleIndicator(this.getContext()))
+                .isAutoLoop(false);
     }
-
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
-
 
     public static PicTextFragment getInstance(int index, String jobId) {
         PicTextFragment f = new PicTextFragment();
@@ -176,6 +168,4 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
         f.setArguments(args);
         return f;
     }
-
-
 }

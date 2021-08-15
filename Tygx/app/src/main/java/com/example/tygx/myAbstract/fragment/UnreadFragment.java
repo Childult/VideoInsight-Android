@@ -1,14 +1,22 @@
 package com.example.tygx.myAbstract.fragment;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,6 +25,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -26,16 +36,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.example.tygx.R;
 import com.example.tygx.data.TaskListSharedPreference;
 import com.example.tygx.data.repository.Abstract;
 import com.example.tygx.data.repository.AbstractsManager;
 import com.example.tygx.databinding.FragmentDoneAbstractListBinding;
 import com.example.tygx.inputUrl.InputUrl;
+import com.example.tygx.mainWindow.MainWindow;
+import com.example.tygx.myAbstract.MyAbstract;
 import com.example.tygx.myAbstract.adapter.MyAbstractRecyclerViewAdapter;
 import com.example.tygx.myAbstract.fragment.dummy.DummyContent;
 import com.example.tygx.request.GetTask;
 import com.example.tygx.request.PostCreateTask;
 import com.example.tygx.showAbstract.ShowAbstract;
+import com.example.tygx.showAbstract.bean.DataBean;
 import com.example.tygx.utils.Global;
 import com.example.tygx.utils.Status;
 import com.kingja.loadsir.callback.Callback;
@@ -68,14 +82,12 @@ public class UnreadFragment extends Fragment {
     private int mColumnCount = 1;
     protected RecyclerView recyclerView;
     protected SmartRefreshLayout refreshLayout;
-    //using DummyItem
-    //protected MyAbstractRecyclerViewAdapter<DummyContent.DummyItem> myAbstractRecyclerViewAdapter;
-    //protected List<DummyContent.DummyItem> items = Collections.synchronizedList(new ArrayList<>());
-    //protected Set<String> unreadTaskSet;
+
+    private ActivityManager activityManager;
+    private String packageName;
     //using Abstract
     protected MyAbstractRecyclerViewAdapter<Abstract> myAbstractRecyclerViewAdapter;
     protected List<Abstract> items = Collections.synchronizedList(new ArrayList<>());
-//    protected Flowable<List<Abstract>> itemsFlow;
 
     protected Activity mActivity;
 
@@ -114,8 +126,6 @@ public class UnreadFragment extends Fragment {
                     String title = jsonObject.getString("title").trim();
                     Status status = Status.values()[jsonObject.getInt("status")];
                     String message = status.toString();
-//                    int status = (int) jsonObject.get("status");
-//                    String message = jsonObject.get("message").toString();
 
                     String result = "";
                     try {
@@ -125,10 +135,6 @@ public class UnreadFragment extends Fragment {
                     String[] url = call.request().url().toString().split("/");
                     String finalResult = result;
                     mActivity.runOnUiThread(() -> {
-                        //Toast toast = Toast.makeText(mActivity, message, Toast.LENGTH_LONG);
-                        //toast.setGravity(Gravity.TOP, 0, 0);
-                        //toast.show();
-                        // 更新任务信息
                         refresh(url[url.length - 1], message, finalResult, String.valueOf(status), title);
                     });
                 }
@@ -192,19 +198,10 @@ public class UnreadFragment extends Fragment {
         } else {
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
-        /*SharedPreferences sPreferences = context.getSharedPreferences("taskList", Context.MODE_PRIVATE);
-        if(sPreferences.contains("unreadTaskSet")) {
-            unreadTaskSet = sPreferences.getStringSet("unreadTaskSet", new HashSet<String>());
-            unreadNums = unreadTaskSet.size();
-        }else {
-            unreadTaskSet = new HashSet<>();
-            unreadNums = 0;
-        }
-        int i = 0;
-        for(String unreadTask : unreadTaskSet){
-            items.add(new DummyContent.DummyItem(String.valueOf(i),"unread abstract","读过的摘要","未完成",unreadTask,""));
-            i++;
-        }*/
+
+        activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        packageName = context.getPackageName();
+
         items = AbstractsManager.getIntance(context).abstractsDao().loadByType("未读");
         myAbstractRecyclerViewAdapter = new MyAbstractRecyclerViewAdapter<>(items, context);
         recyclerView.setAdapter(myAbstractRecyclerViewAdapter);
@@ -254,15 +251,15 @@ public class UnreadFragment extends Fragment {
                 for (Abstract item : items) {
                     // 只查询处理中的任务进度
                     String msg = item.getMessage();
-//            if (msg.equals(Status.CREATED.toString()) || msg.equals("")) {
-                    new Thread(() -> {
-                        try {
-                            new GetTask(getTask, item.getJobId()).send();
-                        } catch (Exception e) {
-                            Log.e("exception", e.toString());
-                        }
-                    }).start();
-//            }
+                    if (msg.equals(Status.CREATED.toString()) || msg.equals("")) {
+                        new Thread(() -> {
+                            try {
+                                new GetTask(getTask, item.getJobId()).send();
+                            } catch (Exception e) {
+                                Log.e("exception", e.toString());
+                            }
+                        }).start();
+                    }
                 }
                 refreshLayout.finishRefresh(1000);
             }
@@ -272,7 +269,6 @@ public class UnreadFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
         dividerItemDecoration.setDrawable(new ColorDrawable(ContextCompat.getColor(context, android.R.color.darker_gray)));
         recyclerView.addItemDecoration(dividerItemDecoration);
-//        if(items.size() > 0)
         checkRefresh();
         return binding.getRoot();
     }
@@ -286,54 +282,26 @@ public class UnreadFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-//        int i = 0;
-//        SharedPreferences sPreferences = context.getSharedPreferences("taskList", Context.MODE_PRIVATE);
-//        Set<String> unreadTaskSet;
-//        if(sPreferences.contains("unreadTaskSet")) {
-//            unreadTaskSet = sPreferences.getStringSet("unreadTaskSet", new HashSet<String>());
-//        }else {
-//            unreadTaskSet = new HashSet<>();
-//        }
-//        for(String jobId: unreadTaskSet){
-//            myAbstractRecyclerViewAdapter.notifyItemChanged(i);
-//            i++;
-//        }
     }
 
     public void checkRefresh() {
         handler.postDelayed(mRunnable, Global.POLLING_INTERVAL);
-//        loadService = LoadSir.getDefault().register(recyclerView, (Callback.OnReloadListener) v -> {
-//
-//        });
+
         for (Abstract item : items) {
             // 只查询处理中的任务进度
             String msg = item.getMessage();
-//            if (msg.equals(Status.CREATED.toString()) || msg.equals("")) {
-            new Thread(() -> {
-                try {
-                    new GetTask(getTask, item.getJobId()).send();
-                } catch (Exception e) {
-                    Log.e("exception", e.toString());
-                }
-            }).start();
-//            }
+            if (msg.equals(Status.CREATED.toString()) || msg.equals("")) {
+                new Thread(() -> {
+                    try {
+                        new GetTask(getTask, item.getJobId()).send();
+                    } catch (Exception e) {
+                        Log.e("exception", e.toString());
+                    }
+                }).start();
+            }
         }
     }
 
-    //using sharedPreference
-    /*public void refresh(String jobId, String message, String result){
-        int i = 0;
-        for(DummyContent.DummyItem item : items){
-            if(item.jobId.equals(jobId) && !item.message.equals(message)){
-                if(item.message.equals("完成")){
-                    item.result = result;
-                }
-                item.message = message;
-                myAbstractRecyclerViewAdapter.notifyItemChanged(i);
-            }
-            i++;
-        }
-    }*/
 
     public void refresh(String jobId, String message, String result, String status, String title) {
         int i = 0;
@@ -343,20 +311,60 @@ public class UnreadFragment extends Fragment {
                 mAbstract.setMessage(message);
                 mAbstract.setStatus(status);
                 mAbstract.setTitle(title);
+
+                // 任务完成
                 if (message.equals(Status.DONE.toString())) {
-                    mActivity.runOnUiThread(() -> new AlertDialog.Builder(mActivity)
-                            .setTitle("提示")
-                            .setMessage("摘要任务已完成！")
-                            .setPositiveButton("确定", null)
-                            .show());
                     mAbstract.setResult(result);
+
+                    if (appOnForeground()) {
+                        new AlertDialog.Builder(mActivity)
+                                .setTitle("提示")
+                                .setMessage("摘要任务已完成！")
+                                .setPositiveButton("确定", null)
+                                .show();
+                    }
+
+                    // 推送通知
+                    mActivity.runOnUiThread(() -> {
+                        Intent intent = new Intent(mActivity, MyAbstract.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        PendingIntent pendingIntent = PendingIntent.getActivity(mActivity, 0, intent, 0);
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(mActivity, Global.CHANNEL_ID)
+                                .setSmallIcon(R.drawable.logo)
+                                .setContentTitle("提示")
+                                .setContentText("摘要任务已完成！")
+                                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                .setContentIntent(pendingIntent)
+                                .setAutoCancel(true);
+
+                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mActivity);
+
+                        // notificationId is a unique int for each notification that you must define
+                        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
+                    });
                 }
+
                 AbstractsManager.getIntance(context).abstractsDao().update(mAbstract);
                 items.set(i, mAbstract);
                 myAbstractRecyclerViewAdapter.notifyItemChanged(i);
             }
             i++;
         }
+    }
+
+    private boolean appOnForeground() {
+        List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+
+        if (appProcesses == null)
+            return false;
+
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+            if (appProcess.processName.equals(packageName) && appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void showDetailedAbstract(int position) {

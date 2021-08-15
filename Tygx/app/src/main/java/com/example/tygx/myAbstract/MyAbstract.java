@@ -4,11 +4,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.example.tygx.databinding.ActivityMyAbstractBinding;
 import com.example.tygx.myAbstract.adapter.MyAbstractAdapter;
-import com.example.tygx.utils.AIUnit;
 import com.example.tygx.utils.BaseActivity;
 import com.google.android.material.tabs.TabLayoutMediator;
 
