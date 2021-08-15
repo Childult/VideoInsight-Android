@@ -1,20 +1,16 @@
 package com.example.tygx.mainWindow;
 
 
-import android.content.Context;
+import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.example.tygx.databinding.ActivityMainWindowBinding;
 import com.example.tygx.inputUrl.InputUrl;
 import com.example.tygx.myAbstract.MyAbstract;
-import com.example.tygx.showAbstract.ShowAbstract;
 import com.example.tygx.utils.BaseActivity;
-import com.example.tygx.utils.Global;
 
 
 /*
@@ -29,13 +25,6 @@ public class MainWindow extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(Global.HTTP_DEBUG_MODE){
-            SharedPreferences sPreferences = this.getSharedPreferences("taskList", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sPreferences.edit();
-            editor.clear();
-            editor.apply();
-        }
-
         ActivityMainWindowBinding inflate = ActivityMainWindowBinding.inflate(getLayoutInflater());
         setContentView(inflate.getRoot());
 
@@ -44,32 +33,25 @@ public class MainWindow extends BaseActivity {
         getWindow().setNavigationBarColor(Color.TRANSPARENT);//设置NavigationBar为透明色
 
         //一键开始
-        inflate.buttonStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(com.example.tygx.mainWindow.MainWindow.this, InputUrl.class);
-                startActivityForResult(intent, REQ_ABSTRACT);
-            }
+        inflate.buttonStart.setOnClickListener(v -> {
+            Intent intent = new Intent(MainWindow.this, InputUrl.class);
+            startActivityForResult(intent, REQ_ABSTRACT);
         });
 
         //我的摘要
-        inflate.buttonMyAbstract.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(com.example.tygx.mainWindow.MainWindow.this, MyAbstract.class);
-                startActivityForResult(intent, REQ_MY_ABSTRACT);
-            }
+        inflate.buttonMyAbstract.setOnClickListener(v -> {
+            Intent intent = new Intent(MainWindow.this, MyAbstract.class);
+            startActivityForResult(intent, REQ_MY_ABSTRACT);
         });
 
         //帮助说明
-        inflate.buttonHelp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
+        inflate.buttonHelp.setOnClickListener(v -> new AlertDialog.Builder(MainWindow.this)
+                .setTitle("帮助说明")
+                .setMessage("1.点击“一键开始”，输入视频URL提交后，等待数分钟即可获得图文摘要；\n" +
+                        "2.点击“我的摘要”可查看摘要历史。")
+                .setPositiveButton("好", null)
+                .show());
     }
-
-
 }
 
 

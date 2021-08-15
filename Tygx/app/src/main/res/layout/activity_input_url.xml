@@ -7,12 +7,13 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_inputUrl"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="90dp"
         android:background="#000000"
         app:navigationIcon="@drawable/ic_navigate_before_white_24dp"
         app:title=""
         app:titleTextColor="@color/white"
         app:contentInsetStart="0dp"
+        app:buttonGravity="bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -25,7 +26,7 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="31dp"
-                android:layout_marginEnd="136dp"
+                android:layout_marginEnd="95dp"
                 android:background="@android:color/transparent"
                 android:text="@string/input_url_toolbar"
                 android:textColor="#FFFFFFFF"
@@ -33,7 +34,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.529" />
+                app:layout_constraintVertical_bias="0.729" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
 

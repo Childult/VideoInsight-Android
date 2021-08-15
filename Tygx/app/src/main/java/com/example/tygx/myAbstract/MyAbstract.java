@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.example.tygx.databinding.ActivityMyAbstractBinding;
 import com.example.tygx.myAbstract.adapter.MyAbstractAdapter;
@@ -31,9 +30,8 @@ public class MyAbstract extends BaseActivity {
         inflate.toolbarAbstract.setNavigationContentDescription("返回");
 
         //沉浸式状态栏设置
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-//        getWindow().setStatusBarColor(Color.TRANSPARENT);//设置statusbar为透明色
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);//设置statusbar为透明色
         getWindow().setNavigationBarColor(Color.TRANSPARENT);//设置NavigationBar为透明色
 
         inflate.viewPager.setAdapter(new MyAbstractAdapter(this));

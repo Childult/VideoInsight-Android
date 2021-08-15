@@ -7,6 +7,8 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import com.example.tygx.utils.Status;
+
 @Entity(tableName = "abstracts", primaryKeys = "jobId", indices = {@Index(value = {"jobId"}, unique = true)})
 public class Abstract {
 
@@ -41,7 +43,7 @@ public class Abstract {
         this.type = type;
         this.url = url;
         this.message = message;
-        this.title = "";
+        this.title = "标题获取中...";
         this.keywords = "";
     }
 
@@ -52,8 +54,8 @@ public class Abstract {
         this.status = "";
         this.type = "";
         this.url = url;
-        this.message = "";
-        this.title = "";
+        this.message = Status.CREATED.toString();
+        this.title = "标题获取中...";
         this.keywords = "";
     }
 
@@ -64,8 +66,8 @@ public class Abstract {
         this.status = "";
         this.type = type;
         this.url = url;
-        this.message = "";
-        this.title = "";
+        this.message = Status.CREATED.toString();
+        this.title = "标题获取中...";
         this.keywords = "";
     }
 
@@ -76,8 +78,8 @@ public class Abstract {
         this.status = "";
         this.type = type;
         this.url = url;
-        this.message = "";
-        this.title = "";
+        this.message = Status.CREATED.toString();
+        this.title = "标题获取中...";
         this.keywords = keywords;
     }
 

@@ -10,7 +10,7 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="confirm">确认</string>
-    <string name="input_url_url">请输入视频Url</string>
+    <string name="input_url_url">请输入视频URL</string>
     <string name="title_abstract">摘要</string>
     <string name="welcome_words">欢迎使用提要钩玄</string>
     <string name="main_window_start"> 一键开始 </string>
@@ -19,10 +19,12 @@
     <string name="input_url_keyword">请输入关键词，使用空格分隔（可选）</string>
     <string name="switch_on">开</string>
     <string name="switch_off">关</string>
-    <string name="input_url_toolbar">输入url和关键词</string>
+    <string name="input_url_toolbar">输入URL和关键词</string>
     <string name="input_url_keyword_trigger">关键词触发提醒</string>
     <string name="pic_text_text">文本摘要</string>
     <string name="pic_text_edit">编辑</string>
     <string name="pic_text_reset">重置</string>
     <string name="my_abstract">我的摘要</string>
+    <string name="channel_name">VideoInsight</string>
+    <string name="channel_description">VideoInsight</string>
 </resources>

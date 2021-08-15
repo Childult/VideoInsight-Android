@@ -1,7 +1,9 @@
 package com.example.tygx.myAbstract.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
@@ -28,6 +30,9 @@ import com.example.tygx.inputUrl.InputUrl;
 import com.example.tygx.myAbstract.adapter.MyAbstractRecyclerViewAdapter;
 import com.example.tygx.myAbstract.fragment.dummy.DummyContent;
 import com.example.tygx.showAbstract.ShowAbstract;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -47,7 +52,8 @@ public class ReadFragment extends Fragment {
     private final Lock lock = new ReentrantLock();
     //using DummyItem
     //protected MyAbstractRecyclerViewAdapter<DummyContent.DummyItem> myAbstractRecyclerViewAdapter;
-    //protected List<DummyContent.DummyItem> items = Collections.synchronizedList(new ArrayList<>());
+    //protected List<DummyContent.DummyItem>
+    // = Collections.synchronizedList(new ArrayList<>());
     //using Abstract
     protected MyAbstractRecyclerViewAdapter<Abstract> myAbstractRecyclerViewAdapter;
     protected List<Abstract> items = Collections.synchronizedList(new ArrayList<>());
@@ -55,6 +61,7 @@ public class ReadFragment extends Fragment {
     protected int readNums;
     protected Context context;
     protected Activity mActivity;
+    protected SmartRefreshLayout refreshLayout;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -73,9 +80,9 @@ public class ReadFragment extends Fragment {
     }
 
     @Override
-    public View  onCreateView (@NotNull LayoutInflater inflater,
-                               ViewGroup container,
-                               Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = com.example.tygx.databinding.FragmentDoneAbstractListBinding.inflate(inflater, container, false);
         RecyclerView recyclerView = binding.recyclerView;
@@ -106,12 +113,38 @@ public class ReadFragment extends Fragment {
         myAbstractRecyclerViewAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                    showDetailedAbstract(position);
+                showDetailedAbstract(position);
             }
         });
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
         dividerItemDecoration.setDrawable(new ColorDrawable(ContextCompat.getColor(context, android.R.color.darker_gray)));
         recyclerView.addItemDecoration(dividerItemDecoration);
+
+        refreshLayout = binding.refreshLayout;
+        refreshLayout.setOnRefreshListener(refreshLayout -> {
+            items.clear();
+            items.addAll(AbstractsManager.getIntance(context).abstractsDao().loadByType("已读"));
+            myAbstractRecyclerViewAdapter.notifyDataSetChanged();
+            refreshLayout.finishRefresh(1000);
+        });
+
+        // 设置长按删除事件
+        myAbstractRecyclerViewAdapter.setOnItemLongClickListener((adapter, view, position) -> {
+
+            mActivity.runOnUiThread(() -> new AlertDialog.Builder(mActivity)
+                    .setTitle("提示")
+                    .setMessage("是否确认删除该条摘要任务？")
+                    .setPositiveButton("是", (dialog, which) -> {
+                        Abstract mAbstract = AbstractsManager.getIntance(context).abstractsDao().loadByJobId(items.get(position).getJobId());
+                        AbstractsManager.getIntance(context).abstractsDao().delete(mAbstract);
+                        items.remove(position);
+                        myAbstractRecyclerViewAdapter.notifyItemRemoved(position);
+                    })
+                    .setNegativeButton("否", null)
+                    .show());
+            return false;
+        });
+
         return binding.getRoot();
     }
 
@@ -136,17 +169,19 @@ public class ReadFragment extends Fragment {
 //            myAbstractRecyclerViewAdapter.notifyItemChanged(i);
 //            i++;
 //        }
-        items = AbstractsManager.getIntance(context).abstractsDao().loadByType("已读");
-        myAbstractRecyclerViewAdapter.notifyDataSetChanged();
+//        items = AbstractsManager.getIntance(context).abstractsDao().loadByType("已读");
+//        myAbstractRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         // TODO：刷新页面
-        items = AbstractsManager.getIntance(context).abstractsDao().loadByType("已读");
+        items.clear();
+        items.addAll(AbstractsManager.getIntance(context).abstractsDao().loadByType("已读"));
         myAbstractRecyclerViewAdapter.notifyDataSetChanged();
     }
+
 
     private void showDetailedAbstract(int position) {
         Intent intent = new Intent(getContext(), ShowAbstract.class);
@@ -169,8 +204,8 @@ public class ReadFragment extends Fragment {
         super.onAttach(context);
         //保存activity引用
 
-        if (context instanceof Activity){
-            this.mActivity=(Activity) context;
+        if (context instanceof Activity) {
+            this.mActivity = (Activity) context;
         }
     }
 }

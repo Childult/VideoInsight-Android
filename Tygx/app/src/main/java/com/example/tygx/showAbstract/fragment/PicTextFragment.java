@@ -1,6 +1,8 @@
 package com.example.tygx.showAbstract.fragment;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -11,18 +13,16 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import com.bumptech.glide.Glide;
 import com.example.tygx.data.repository.Abstract;
 import com.example.tygx.data.repository.AbstractsManager;
-import com.example.tygx.databinding.ActivityAbstractBinding;
 import com.example.tygx.databinding.FragmentPicTextBinding;
 import com.example.tygx.showAbstract.adapter.ImageAdapter;
 import com.example.tygx.showAbstract.bean.DataBean;
+import com.example.tygx.utils.Global;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.youth.banner.Banner;
-import com.youth.banner.adapter.BannerAdapter;
 import com.youth.banner.indicator.CircleIndicator;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,8 +34,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.example.tygx.utils.Tools.hexString2Bytes;
-
 public class PicTextFragment extends Fragment implements ObservableScrollViewCallbacks {
     private FragmentPicTextBinding binding;
     ObservableScrollView scrollView;
@@ -45,11 +43,12 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
     String text = "";
     Banner<DataBean, ImageAdapter> banner;
     List<DataBean> bannerImageList = Collections.synchronizedList(new ArrayList<>());
+    List<DataBean> bannerImageListWithoutKW = Collections.synchronizedList(new ArrayList<>());
 
     @Override
-    public View  onCreateView (@NotNull LayoutInflater inflater,
-                               ViewGroup container,
-                               Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
         FragmentActivity context = getActivity();
         super.onCreate(savedInstanceState);
         binding = FragmentPicTextBinding.inflate(inflater, container, false);
@@ -58,10 +57,11 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
         scrollView.setScrollViewCallbacks(this);
         jobId = getArguments().getString("jobId");
         Abstract mAbstract = AbstractsManager.getIntance(context).abstractsDao().loadByJobId(jobId);
+        String[] keywords = mAbstract.getKeywords().split(" ");
         String result = mAbstract.getResult();
         StringBuilder sb = new StringBuilder();
         try {
-            //text
+            // 解析文本摘要
             JSONObject resultJson = new JSONObject(result);
             textArray = resultJson.getJSONArray("text");
             int text_index = 0;
@@ -71,24 +71,60 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
                 text_index++;
             }
             text = sb.toString();
-        }catch (JSONException e) {
-            Log.e("textAbstract","json load failed");
+        } catch (JSONException e) {
+            Log.e("textAbstract", "json load failed");
         }
-        try{
-            //picture
+
+        try {
+            // 解析关键帧图片数据
             JSONObject resultJson = new JSONObject(result);
             JSONObject pictureJson = new JSONObject(resultJson.get("pictures").toString());
             int frame_i = 1;
             String frame_key = "keyframe_" + frame_i + ".jpg";
-            while(pictureJson.has(frame_key)){
+            while (pictureJson.has(frame_key)) {
                 byte[] bitmapArray = Base64.decode(pictureJson.get(frame_key).toString(), Base64.DEFAULT);
-//                byte[] bitmapArray = pictureJson.get(frame_key).toString().getBytes();
-                bannerImageList.add(new DataBean(bitmapArray, null, 8));
+
+                // 如果设定了关键词，对关键帧图片进行OCR识别，检查识别结果中是否包含关键词
+                if (keywords.length > 0) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
+                    List<String> res = Global.SNPE.OCR(bitmap);
+                    boolean hasKeywords = false;
+                    for (String sen : res) {
+                        if (hasKeywords) {
+                            break;
+                        }
+
+                        for (String kw : keywords) {
+                            // OCR结果中有关键词
+                            if (sen.contains(kw)) {
+                                hasKeywords = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    // 将包含关键词的图片和不含关键词的图片先分别存放
+                    if (hasKeywords) {
+                        bannerImageList.add(new DataBean(bitmapArray, null, 8));
+                    } else {
+                        bannerImageListWithoutKW.add(new DataBean(bitmapArray, null, 8));
+                    }
+                } else {
+                    // 没有关键词，直接按照返回的顺序展示
+                    bannerImageList.add(new DataBean(bitmapArray, null, 8));
+                }
+
                 frame_i++;
                 frame_key = "keyframe_" + frame_i + ".jpg";
             }
-        }catch (JSONException e) {
-            Log.e("textAbstract","json load failed");
+
+            if (bannerImageListWithoutKW.size() > 0) {
+                // 将不包含关键词的图片放在包含关键字的图片后面
+                bannerImageList.addAll(bannerImageListWithoutKW);
+            }
+
+        } catch (JSONException e) {
+            Log.e("videoAbstract", "json load failed");
         }
         binding.picTextTextView.setText(text);
 
@@ -97,6 +133,7 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
 
         return binding.getRoot();
     }
+
     @Override
     public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
     }
@@ -113,10 +150,9 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
         //--------------------------简单使用-------------------------------
         banner.setAdapter(new ImageAdapter(bannerImageList))
                 .addBannerLifecycleObserver(this)//添加生命周期观察者
-                .setIndicator(new CircleIndicator(this.getContext()));
-
+                .setIndicator(new CircleIndicator(this.getContext()))
+                .isAutoLoop(false);
     }
-
 
     @Override
     public void onDestroyView() {
@@ -124,15 +160,12 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
         binding = null;
     }
 
-
     public static PicTextFragment getInstance(int index, String jobId) {
         PicTextFragment f = new PicTextFragment();
         Bundle args = new Bundle();
         args.putInt("index", index);
-        args.putString("jobId",jobId);
+        args.putString("jobId", jobId);
         f.setArguments(args);
         return f;
     }
-
-
 }
