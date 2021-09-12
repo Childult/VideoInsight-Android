@@ -15,7 +15,6 @@ import com.example.tygx.myAbstract.MyAbstract;
 import com.example.tygx.snpe.Predictor;
 import com.example.tygx.snpe.Utils;
 import com.example.tygx.utils.BaseActivity;
-import com.example.tygx.utils.Global;
 
 
 /*
