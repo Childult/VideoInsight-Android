@@ -85,7 +85,7 @@ public class PicTextFragment extends Fragment implements ObservableScrollViewCal
                 byte[] bitmapArray = Base64.decode(pictureJson.get(frame_key).toString(), Base64.DEFAULT);
 
                 // 如果设定了关键词，对关键帧图片进行OCR识别，检查识别结果中是否包含关键词
-                if (keywords.length > 0) {
+                if (!keywords[0].equals("") && Global.SNPE.isLoaded) {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
                     List<String> res = Global.SNPE.OCR(bitmap);
                     boolean hasKeywords = false;

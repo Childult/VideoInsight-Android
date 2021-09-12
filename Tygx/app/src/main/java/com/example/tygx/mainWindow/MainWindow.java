@@ -5,22 +5,38 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import com.example.tygx.R;
 import com.example.tygx.databinding.ActivityMainWindowBinding;
 import com.example.tygx.inputUrl.InputUrl;
 import com.example.tygx.myAbstract.MyAbstract;
+import com.example.tygx.snpe.Predictor;
+import com.example.tygx.snpe.Utils;
 import com.example.tygx.utils.BaseActivity;
 
 
 /*
-* 登录之后的主界面
-* 可以选择开始，看历史摘要或者帮助
-*/
+ * 登录之后的主界面
+ * 可以选择开始，看历史摘要或者帮助
+ */
 public class MainWindow extends BaseActivity {
 
     private static final int REQ_ABSTRACT = 1;
     private static final int REQ_MY_ABSTRACT = 1;
+
+    // Model settings of object detection
+    protected String modelPath = "";
+    protected String labelPath = "";
+    protected String imagePath = "";
+    protected int cpuThreadNum = 1;
+    protected String cpuPowerMode = "";
+    protected String inputColorFormat = "";
+    protected long[] inputShape = new long[]{};
+    protected float[] inputMean = new float[]{};
+    protected float[] inputStd = new float[]{};
+    protected float scoreThreshold = 0.1f;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +67,33 @@ public class MainWindow extends BaseActivity {
                         "2.点击“我的摘要”可查看摘要历史。")
                 .setPositiveButton("好", null)
                 .show());
+
+        // init model
+        initSNPE();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (Global.SNPE != null) {
+            Global.SNPE.releaseModel();
+        }
+        super.onDestroy();
+    }
+
+    void initSNPE() {
+        modelPath = getString(R.string.MODEL_PATH_DEFAULT);
+        labelPath = getString(R.string.LABEL_PATH_DEFAULT);
+        cpuThreadNum = Integer.parseInt(getString(R.string.CPU_THREAD_NUM_DEFAULT));
+        cpuPowerMode = getString(R.string.CPU_POWER_MODE_DEFAULT);
+        inputColorFormat = getString(R.string.INPUT_COLOR_FORMAT_DEFAULT);
+        inputShape = Utils.parseLongsFromString(getString(R.string.INPUT_SHAPE_DEFAULT), ",");
+        inputMean = Utils.parseFloatsFromString(getString(R.string.INPUT_MEAN_DEFAULT), ",");
+        inputStd = Utils.parseFloatsFromString(getString(R.string.INPUT_STD_DEFAULT), ",");
+        scoreThreshold = Float.parseFloat(getString(R.string.SCORE_THRESHOLD_DEFAULT));
+
+        Global.SNPE = new Predictor();
+        boolean loadStatue = Global.SNPE.init(MainWindow.this, modelPath, labelPath, cpuThreadNum, cpuPowerMode, inputColorFormat, inputShape, inputMean, inputStd, scoreThreshold);
+        Log.d("MainWindow", "loadStatue: " + loadStatue);
     }
 }
 
