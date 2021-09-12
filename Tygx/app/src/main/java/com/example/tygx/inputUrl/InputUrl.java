@@ -16,7 +16,10 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListPopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,6 +62,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -80,12 +84,13 @@ import okio.Buffer;
 public class InputUrl extends BaseActivity {
 
     private static final int REQ_ABSTRACT = 1;
+    protected Activity mActivity = InputUrl.this;
     private final CompositeDisposable mDisposable = new CompositeDisposable();
 
     /******************************
      ************ 回调 ************
      ******************************/
-    private okhttp3.Callback createTask = new okhttp3.Callback() {
+    private final okhttp3.Callback createTask = new okhttp3.Callback() {
         @Override
         public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
             try {
@@ -103,7 +108,6 @@ public class InputUrl extends BaseActivity {
                     JSONObject jsonObject = new JSONObject(responseBodyString);
                     Status status = Status.values()[(int) jsonObject.get("status")];
                     String message = status.toString();
-//                    String message = jsonObject.get("message").toString();
                     String result = jsonObject.get("result").toString();
                     JSONObject resultJson = new JSONObject(result);
                     String jobId = resultJson.get("job_id").toString();
@@ -192,37 +196,64 @@ public class InputUrl extends BaseActivity {
         getWindow().setNavigationBarColor(Color.TRANSPARENT);//设置NavigationBar为透明色
 
         Log.d("fID", "fID: " + Global.fID);
-        //自定义validator
-        //inflate.textInputUrl.addValidator(new Valid.NotBlankValidator());
-        inflate.buttonConfirmInput.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = inflate.textInputUrl.getText().toString().trim();
-                String[] keywords = inflate.textInputKeyword.getText().toString().trim().split(" ");
-                Pattern p = Pattern.compile("\\s*|\t|\r|\n");
-                Matcher m = p.matcher(url);
-                url = m.replaceAll("");
-                inflate.textInputUrl.setText(url);
-                if (inflate.textInputUrl.testValidity()) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                String url = inflate.textInputUrl.getText().toString();
-//                                if (Global.HTTP_DEBUG_MODE) {
-//                                    url = "https://www.bilibili.com/video/BV1Bv411k745";
-//                                    Global.fID = "test";
-//                                }
-                                Log.d("FID:", Global.fID);
-//                                new GetTask(createTask, "667ecee481cec71cfc784457").send();
-                                new PostCreateTask(createTask, url, Global.fID, keywords).sendJson();
-                            } catch (Exception e) {
-                                Log.e("exception", e.toString());
-                            }
-                        }
-                    }).start();
-                }
+        inflate.buttonConfirmInput.setOnClickListener(v -> {
+            String url = Objects.requireNonNull(inflate.textInputUrl.getText()).toString().trim();
+            String[] keywords = Objects.requireNonNull(inflate.textInputKeyword.getText()).toString().trim().split(" ");
+
+            if (url.length() == 0) {
+                Toast toast = Toast.makeText(InputUrl.this, "URL不能为空！", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP, 0, 0);
+                toast.show();
+                return;
             }
+
+            Pattern p = Pattern.compile("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()!@:%_\\+.~#?&\\/\\/=]*)",
+                    Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            Matcher m = p.matcher(url);
+            if (!m.find()) {
+                Toast toast = Toast.makeText(InputUrl.this, "请输入有效的URL", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP, 0, 0);
+                toast.show();
+                return;
+            }
+
+            url = m.group();
+            Log.d("input", "matched URL: " + url);
+            inflate.textInputUrl.setText(url);
+            String finalUrl = url;
+            new Thread(() -> {
+                try {
+                    Log.d("FID:", Global.fID);
+                    new PostCreateTask(createTask, finalUrl, Global.fID, keywords).sendJson();
+                } catch (Exception e) {
+                    Log.e("exception", e.toString());
+                }
+            }).start();
+
+        });
+
+        // show url history
+        inflate.buttonUrlHistory.setOnClickListener(v -> {
+            final ListPopupWindow listPopupWindow;
+            listPopupWindow = new ListPopupWindow(mActivity);
+            listPopupWindow.setAdapter(new ArrayAdapter<>(mActivity, android.R.layout.simple_list_item_1, Global.HISTORY));//用android内置布局，或设计自己的样式
+            listPopupWindow.setAnchorView(inflate.textInputUrl);          //以哪个控件为基准，在该处以mEditText为基准
+            listPopupWindow.setModal(true);
+
+            // 设置项点击监听
+            listPopupWindow.setOnItemClickListener((adapterView, view, i, l) -> {
+                String[] tmp = Global.HISTORY[i].split(", ");
+                if (tmp.length == 1) {
+                    inflate.textInputUrl.setText(Global.HISTORY[i]);
+                    inflate.textInputKeyword.setText("");
+                } else if (tmp.length == 2) {
+                    inflate.textInputUrl.setText(tmp[0]);
+                    inflate.textInputKeyword.setText(tmp[1]);
+                }
+
+                listPopupWindow.dismiss();                             //如果已经选择了，隐藏起来
+            });
+            listPopupWindow.show();
         });
     }
 }

@@ -38,59 +38,51 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <com.andreabaccega.widget.FormEditText
+    <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/text_input_url"
-        android:layout_width="320dp"
+        android:layout_width="340dp"
         android:layout_height="48dp"
-        android:layout_marginTop="216dp"
-        android:autofillHints="www.baidu.com"
-        android:background="@drawable/textview_background"
-        android:hint="@string/input_url_url"
-        android:inputType="textUri"
-        android:selectAllOnFocus="true"
+        android:layout_marginTop="240dp"
+        android:layout_marginStart="50dp"
+        app:met_underlineColor="#cccccc"
+        app:met_primaryColor="#00A2FF"
+        app:met_iconLeft="@drawable/outline_link_24"
+        app:met_iconPadding="0dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:hint="@string/input_url_url"
         app:testType="webUrl"
+        app:met_clearButton="true"
         app:emptyErrorString="该项不能为空"
         app:testErrorString="请填写合法的url"
         app:emptyAllowed="false"/>
 
-    <com.andreabaccega.widget.FormEditText
+    <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/text_input_keyword"
-        android:layout_width="320dp"
+        android:layout_width="340dp"
         android:layout_height="48dp"
-        android:layout_marginTop="286dp"
+        android:layout_marginTop="340dp"
+        android:layout_marginStart="50dp"
+        app:met_underlineColor="#cccccc"
+        app:met_primaryColor="#00A2FF"
         android:autofillHints="www.baidu.com"
         android:background="@drawable/textview_background"
         android:hint="@string/input_url_keyword"
         android:inputType="textUri"
         android:selectAllOnFocus="true"
+        app:met_clearButton="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:emptyAllowed="true"/>
 
-<!--    <Switch-->
-<!--        android:id="@+id/switch_keyword"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="356dp"-->
-<!--        android:text="@string/input_url_keyword_trigger"-->
-<!--        android:switchPadding="138dp"-->
-<!--        android:textOn="@string/switch_on"-->
-<!--        android:textOff="@string/switch_off"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent" />-->
-
     <Button
         android:id="@+id/button_confirmInput"
         android:layout_width="120dp"
         android:layout_height="48dp"
-        android:layout_marginTop="440dp"
+        android:layout_marginTop="460dp"
         android:background="@drawable/textview_background"
         android:enabled="true"
         android:text="@string/confirm"
@@ -100,5 +92,26 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <ImageButton
+        android:id="@+id/button_urlHistory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="240dp"
+        android:layout_marginRight="340dp"
+        android:src="@drawable/outline_link_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
+    <ImageButton
+        android:id="@+id/button_kw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="340dp"
+        android:layout_marginRight="340dp"
+        android:src="@drawable/outline_bookmark_24"
+        android:clickable="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
